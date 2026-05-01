@@ -301,33 +301,44 @@
 
 <script>
   /* ---- Telegram Popup Logic ---- */
-  const TG_SESSION_KEY = 'dz_tg_shown';
-  const TG_COOLDOWN_MS = 12 * 60 * 60 * 1000;
+  /* ============================================================
+   Telegram Popup — Pure Session-Based (No Permanent Close)
+   প্রতি সেশন/রিফ্রেশে দেখাবে — Join করলেও পরের বার আবার আসবে
+   ============================================================ */
+const TG_SESSION_KEY = 'tg_shown_this_session';
 
-  function checkTelegramPopup() {
-    const lastShown = sessionStorage.getItem(TG_SESSION_KEY);
-    const lastShownPersist = localStorage.getItem(TG_SESSION_KEY);
-    const now = Date.now();
-    if (!lastShown && (!lastShownPersist || now - parseInt(lastShownPersist) > TG_COOLDOWN_MS)) {
-      setTimeout(showTelegramPopup, 1800);
-    }
+function checkTelegramPopup() {
+  const alreadyShown = sessionStorage.getItem(TG_SESSION_KEY);
+  
+  // session এ একবার দেখালেই চলবে — কিন্তু রিফ্রেশ/লগইন করলে reset
+  if (!alreadyShown) {
+    setTimeout(() => {
+      document.getElementById('tg-modal').classList.remove('hidden');
+      sessionStorage.setItem(TG_SESSION_KEY, 'true');
+    }, 2000);
   }
+}
 
-  function showTelegramPopup() {
-    document.getElementById('tg-modal').classList.remove('hidden');
-  }
+function closeTelegramPopup() {
+  document.getElementById('tg-modal').classList.add('hidden');
+  // sessionStorage সেট করা আছে — তাই এই সেশনে আর দেখাবে না
+  // কিন্তু রিফ্রেশ/লগইন করলে sessionStorage clear → আবার দেখাবে
+}
 
-  function closeTelegramPopup() {
+function markTelegramShown() {
+  // Join করলেও session এ mark করবো — যাতে এই সেশনে আর বিরক্ত না করে
+  sessionStorage.setItem(TG_SESSION_KEY, 'true');
+  setTimeout(() => {
     document.getElementById('tg-modal').classList.add('hidden');
-    markTelegramShown();
-  }
+  }, 500);
+  // ইউজার চ্যানেলে গেছে — দারুণ!
+  // পরের বার রিফ্রেশ/লগইনে আবার দেখাবো
+}
 
-  function markTelegramShown() {
-    sessionStorage.setItem(TG_SESSION_KEY, '1');
-    localStorage.setItem(TG_SESSION_KEY, Date.now().toString());
-    setTimeout(() => document.getElementById('tg-modal').classList.add('hidden'), 300);
-  }
-
+function showTelegramPopup() {
+  // Floating button থেকে call হলে — সরাসরি দেখাও
+  document.getElementById('tg-modal').classList.remove('hidden');
+}
   /* ---- Product Rendering ---- */
   function renderProducts(products) {
     const grid  = document.getElementById('products-grid');

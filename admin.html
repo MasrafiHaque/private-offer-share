@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>অ্যাডমিন প্যানেল — Private Offer Share</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ---- Product Form Modal ---- */
+    .form-modal .modal-box {
+      max-width: 620px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .form-modal-title { font-size: 1.2rem; margin-bottom: 24px; padding-right: 40px; }
+    .form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px; }
+
+    /* ---- Cloudinary Upload Area ---- */
+    #image-upload-area {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-sm);
+      padding: 28px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+    }
+    #image-upload-area:hover { border-color: var(--accent); background: var(--accent-glow); }
+    #image-upload-area.dragging { border-color: var(--accent); background: var(--accent-glow); }
+    #image-file-input { display: none; }
+    #image-preview {
+      width: 100%;
+      max-height: 200px;
+      object-fit: contain;
+      border-radius: var(--radius-sm);
+      display: none;
+      margin-top: 12px;
+    }
+    .upload-progress {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-top: 12px;
+      overflow: hidden;
+      display: none;
+    }
+    .upload-progress-bar {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    .upload-status { font-size: 0.82rem; color: var(--text-muted); margin-top: 8px; }
+
+    /* ---- Table responsive ---- */
+    @media (max-width: 900px) {
+      .table-header, .table-row {
+        grid-template-columns: 44px 1fr 100px !important;
+      }
+    }
+
+    /* ---- Delete confirm ---- */
+    .confirm-modal .modal-box { max-width: 360px; text-align: center; }
+    .confirm-modal h3 { font-size: 1.1rem; margin-bottom: 10px; }
+    .confirm-modal p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 24px; }
+    .confirm-actions { display: flex; gap: 10px; justify-content: center; }
+
+    /* ---- Access Denied ---- */
+    #access-denied {
+      display: none;
+      min-height: 100vh;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px;
+    }
+    #access-denied h2 { font-size: 1.5rem; margin-bottom: 12px; }
+    #access-denied p { color: var(--text-secondary); margin-bottom: 24px; }
+
+    /* ---- Admin nav mobile ---- */
+    .mobile-admin-nav {
+      display: none;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      gap: 8px;
+    }
+    @media (max-width: 768px) {
+      .admin-layout { flex-direction: column; }
+      .mobile-admin-nav { display: flex; }
+      .admin-content { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Page Loader -->
+<div id="page-loader">
+  <div class="loader-logo">Private<span>Offer</span> Share <span style="color:var(--text-muted);font-size:0.6em;font-weight:400;">অ্যাডমিন</span></div>
+  <div class="spinner"></div>
+</div>
+
+<!-- Access Denied -->
+<div id="access-denied">
+  <div style="font-size:4rem;margin-bottom:16px;">🔒</div>
+  <h2>অ্যাক্সেস প্রত্যাখ্যান</h2>
+  <p>এই প্যানেলে অ্যাক্সেস করার অনুমতি আপনার নেই।</p>
+  <a href="index.html" class="btn btn-primary">স্টোরে যান</a>
+</div>
+
+<!-- ===== PRODUCT FORM MODAL ===== -->
+<div class="modal-overlay form-modal hidden" id="product-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeProductModal()">✕</button>
+    <h3 class="form-modal-title" id="form-title">নতুন প্রোডাক্ট যোগ করুন</h3>
+    <input type="hidden" id="edit-product-id" />
+
+    <div class="product-form">
+      <!-- Title -->
+      <div class="form-group">
+        <label class="form-label">প্রোডাক্টের নাম *</label>
+        <input type="text" id="f-title" class="form-input" placeholder="যেমন: Wireless Earbuds Pro" />
+      </div>
+
+      <!-- Description -->
+      <div class="form-group">
+        <label class="form-label">বিবরণ</label>
+        <textarea id="f-desc" class="form-input" rows="3" placeholder="ছোট করে প্রোডাক্টের বিবরণ..." style="resize:vertical;"></textarea>
+      </div>
+
+      <!-- Price & Category -->
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">মূল্য (৳) *</label>
+          <input type="number" id="f-price" class="form-input" placeholder="যেমন: ১২৯৯" min="0" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">ক্যাটাগরি</label>
+          <input type="text" id="f-category" class="form-input" placeholder="যেমন: ইলেকট্রনিক্স" />
+        </div>
+      </div>
+
+      <!-- Affiliate Link -->
+      <div class="form-group">
+        <label class="form-label">দারাজ অ্যাফিলিয়েট লিংক *</label>
+        <input type="url" id="f-link" class="form-input" placeholder="https://www.daraz.com.bd/products/..." />
+      </div>
+
+      <!-- Image Upload -->
+      <div class="form-group">
+        <label class="form-label">প্রোডাক্টের ছবি</label>
+        <div id="image-upload-area" onclick="document.getElementById('image-file-input').click()"
+             ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragleave="handleDragLeave(event)">
+          <input type="file" id="image-file-input" accept="image/*" onchange="handleImageFile(this.files[0])" />
+          <div id="upload-placeholder">
+            <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 8px;color:var(--text-muted);">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
+            </svg>
+            <p style="color:var(--text-muted);font-size:0.85rem;">ছবি আপলোড করতে ক্লিক করুন বা টেনে আনুন</p>
+            <p style="color:var(--text-muted);font-size:0.75rem;margin-top:4px;">JPG, PNG, WEBP (সর্বোচ্চ ১০MB)</p>
+          </div>
+          <img id="image-preview" src="" alt="প্রিভিউ" />
+        </div>
+        <div class="upload-progress" id="upload-progress">
+          <div class="upload-progress-bar" id="upload-progress-bar"></div>
+        </div>
+        <div class="upload-status" id="upload-status"></div>
+        <input type="hidden" id="f-image-url" />
+      </div>
+
+      <div id="form-error" class="input-error" style="display:none;"></div>
+
+      <div class="form-actions">
+        <button class="btn btn-ghost" onclick="closeProductModal()">বাতিল</button>
+        <button class="btn btn-primary" id="btn-save" onclick="saveProduct()">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          সেভ করুন
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DELETE CONFIRM MODAL ===== -->
+<div class="modal-overlay confirm-modal hidden" id="confirm-modal">
+  <div class="modal-box">
+    <div style="font-size:2.5rem;margin-bottom:12px;">🗑️</div>
+    <h3>প্রোডাক্টটি মুছবেন?</h3>
+    <p>এই কাজটি আর ফিরিয়ে আনা যাবে না। প্রোডাক্টটি স্থায়ীভাবে মুছে যাবে।</p>
+    <div class="confirm-actions">
+      <button class="btn btn-ghost" onclick="closeConfirmModal()">বাতিল</button>
+      <button class="btn btn-danger" id="btn-confirm-delete" onclick="confirmDelete()">মুছুন</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADMIN LAYOUT ===== -->
+<div id="admin-layout" class="admin-layout" style="display:none;">
+  <!-- Mobile Nav -->
+  <div class="mobile-admin-nav">
+    <div class="navbar-logo" style="font-family:var(--font-display);font-size:1.2rem;font-weight:800;">Private<span style="color:var(--accent);">Offer</span> Share</div>
+    <div style="flex:1;"></div>
+    <a href="index.html" class="btn btn-ghost btn-sm">← স্টোর</a>
+    <button class="btn btn-ghost btn-sm" onclick="handleLogout()">লগআউট</button>
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-logo">
+      <div style="font-family:var(--font-display);font-size:1.3rem;font-weight:800;">Private<span style="color:var(--accent);">Offer</span> Share</div>
+      <div style="font-size:0.75rem;color:var(--text-muted);margin-top:2px;">অ্যাডমিন প্যানেল</div>
+    </div>
+    <nav>
+      <div class="sidebar-link active" onclick="showTab('dashboard')">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        ড্যাশবোর্ড
+      </div>
+      <div class="sidebar-link" onclick="showTab('products')">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0l-3-3m3 3l3-3M3.75 7.5h16.5"/></svg>
+        প্রোডাক্ট
+      </div>
+      <div class="sidebar-link" onclick="showTab('settings')">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        সেটিংস
+      </div>
+      <div style="padding: 16px 24px; border-top: 1px solid var(--border); margin-top: auto; position: absolute; bottom: 0; width: 100%;">
+        <a href="index.html" class="sidebar-link" style="padding:10px 0;margin-bottom:4px;">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+          স্টোর দেখুন
+        </a>
+        <div class="sidebar-link" style="padding:10px 0;" onclick="handleLogout()">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/></svg>
+          লগআউট
+        </div>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-content">
+
+    <!-- ===== DASHBOARD TAB ===== -->
+    <div id="tab-dashboard">
+      <div class="admin-header">
+        <h1 class="admin-page-title">ড্যাশবোর্ড</h1>
+        <div id="admin-name" style="color:var(--text-secondary);font-size:0.9rem;"></div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-products">—</div>
+          <div class="stat-label">সর্বমোট প্রোডাক্ট</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-categories">—</div>
+          <div class="stat-label">ক্যাটাগরি</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-users">—</div>
+          <div class="stat-label">রেজিস্টার্ড ইউজার</div>
+        </div>
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:24px;">
+        <h3 style="margin-bottom:16px;font-size:1rem;">দ্রুত অ্যাকশন</h3>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="openAddModal()">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+            প্রোডাক্ট যোগ করুন
+          </button>
+          <button class="btn btn-outline" onclick="showTab('products')">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            প্রোডাক্ট ম্যানেজ করুন
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PRODUCTS TAB ===== -->
+    <div id="tab-products" style="display:none;">
+      <div class="admin-header">
+        <h1 class="admin-page-title">প্রোডাক্ট সমূহ</h1>
+        <button class="btn btn-primary btn-sm" onclick="openAddModal()">
+          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+          প্রোডাক্ট যোগ করুন
+        </button>
+      </div>
+
+      <!-- Search -->
+      <div style="position:relative;max-width:360px;margin-bottom:20px;">
+        <input type="search" class="form-input" id="admin-search" placeholder="প্রোডাক্ট খুঁজুন..." oninput="filterAdminProducts(this.value)" style="padding-left:42px;" />
+        <svg style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </div>
+
+      <div class="products-table" id="products-table">
+        <div class="table-header">
+          <div></div>
+          <div>প্রোডাক্ট</div>
+          <div class="hide-mobile">মূল্য</div>
+          <div class="hide-mobile">ক্যাটাগরি</div>
+          <div>অ্যাকশন</div>
+        </div>
+        <div id="products-table-body">
+          <div style="padding:40px;text-align:center;"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SETTINGS TAB ===== -->
+    <div id="tab-settings" style="display:none;">
+      <div class="admin-header">
+        <h1 class="admin-page-title">সেটিংস</h1>
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:28px;max-width:560px;">
+        <h3 style="margin-bottom:6px;font-size:1rem;">অ্যাডমিন UID</h3>
+        <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:16px;">আপনার Firebase ইউজার আইডি — অ্যাডমিন অ্যাক্সেস দেওয়ার জন্য প্রয়োজন।</p>
+        <div id="admin-uid-display" style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;font-family:monospace;font-size:0.85rem;color:var(--accent);word-break:break-all;"></div>
+        <button class="btn btn-ghost btn-sm" style="margin-top:12px;" onclick="copyUID()">UID কপি করুন</button>
+        <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);">
+          <h3 style="margin-bottom:6px;font-size:1rem;">Cloudinary কনফিগ</h3>
+          <p style="color:var(--text-muted);font-size:0.85rem;"><code style="color:var(--accent);">admin.html</code> ফাইল খুলে <code style="color:var(--accent);">CLOUDINARY_CONFIG</code> আপডেট করুন।</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- Firebase + Admin Logic -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import {
+    getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc,
+    doc, serverTimestamp, query, orderBy, getCountFromServer
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // ✅ আপনার Firebase কনফিগ
+  const firebaseConfig = {
+    apiKey: "AIzaSyClg_colIw3qLzE3DefSeEJP98i37kI-dI",
+    authDomain: "rivate-offer-share.firebaseapp.com",
+    projectId: "rivate-offer-share",
+    storageBucket: "rivate-offer-share.firebasestorage.app",
+    messagingSenderId: "485885612132",
+    appId: "1:485885612132:web:cefc9d9b88c0dc01544f71",
+    measurementId: "G-KWNSXRW4CB"
+  };
+
+  // ✅ আপনার Cloudinary কনফিগ
+  const CLOUDINARY_CONFIG = {
+    cloudName: "dbrrxrbb9",
+    uploadPreset: "private-offer-share"
+  };
+
+  // ⚠️ এখানে আপনার অ্যাডমিন UID বসান (Firebase Console → Authentication থেকে কপি করে)
+  const ADMIN_UID = "YOUR_ADMIN_UID_HERE";
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  window._db   = db;
+  window._auth = auth;
+  window._ADMIN_UID = ADMIN_UID;
+  window._CLOUDINARY = CLOUDINARY_CONFIG;
+  window._fns = { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, query, orderBy, getCountFromServer };
+
+  onAuthStateChanged(auth, async user => {
+    hideLoader();
+    if (!user) { window.location.href = 'auth.html'; return; }
+
+    if (user.uid !== ADMIN_UID) {
+      document.getElementById('access-denied').style.display = 'flex';
+      return;
+    }
+
+    document.getElementById('admin-layout').style.display = 'flex';
+    document.getElementById('admin-name').textContent = 'স্বাগতম, ' + (user.displayName || 'অ্যাডমিন');
+    document.getElementById('admin-uid-display').textContent = user.uid;
+
+    await window.loadAllProducts();
+    await loadStats();
+  });
+
+  window._signOut = () => signOut(auth);
+
+  async function loadStats() {
+    try {
+      const { db, _fns: f } = window;
+      const pSnap = await f.getDocs(f.collection(db, 'products'));
+      const uSnap = await f.getDocs(f.collection(db, 'users'));
+      const products = pSnap.docs.map(d => d.data());
+      const cats = new Set(products.map(p => p.category).filter(Boolean));
+      document.getElementById('stat-products').textContent   = pSnap.size;
+      document.getElementById('stat-categories').textContent = cats.size;
+      document.getElementById('stat-users').textContent      = uSnap.size;
+    } catch(e) { console.error(e); }
+  }
+
+  function hideLoader() {
+    const l = document.getElementById('page-loader');
+    if (l) { l.classList.add('fade-out'); setTimeout(() => l.remove(), 400); }
+  }
+
+  window.uploadToCloudinary = async function(file) {
+    const config = window._CLOUDINARY;
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('upload_preset', config.uploadPreset);
+
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', `https://api.cloudinary.com/v1_1/${config.cloudName}/image/upload`);
+
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable) {
+          const pct = Math.round((e.loaded / e.total) * 100);
+          const bar = document.getElementById('upload-progress-bar');
+          if (bar) bar.style.width = pct +

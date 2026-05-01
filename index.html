@@ -300,71 +300,73 @@
 </script>
 
 <script>
-  /* ---- Telegram Popup Logic ---- */
   /* ============================================================
-   Telegram Popup — Pure Session-Based (No Permanent Close)
-   প্রতি সেশন/রিফ্রেশে দেখাবে — Join করলেও পরের বার আবার আসবে
+   PRODUCT RENDERING + SEARCH + TELEGRAM POPUP (FIXED)
    ============================================================ */
-const TG_SESSION_KEY = 'tg_shown_this_session';
+let currentCategory = 'all';
+let searchQuery = '';
 
+/* ---- Telegram Popup (Fixed Version) ---- */
 function checkTelegramPopup() {
-  const alreadyShown = sessionStorage.getItem(TG_SESSION_KEY);
-  
-  // session এ একবার দেখালেই চলবে — কিন্তু রিফ্রেশ/লগইন করলে reset
-  if (!alreadyShown) {
-    setTimeout(() => {
-      document.getElementById('tg-modal').classList.remove('hidden');
-      sessionStorage.setItem(TG_SESSION_KEY, 'true');
-    }, 2000);
-  }
-}
-
-function closeTelegramPopup() {
-  document.getElementById('tg-modal').classList.add('hidden');
-  // sessionStorage সেট করা আছে — তাই এই সেশনে আর দেখাবে না
-  // কিন্তু রিফ্রেশ/লগইন করলে sessionStorage clear → আবার দেখাবে
-}
-
-function markTelegramShown() {
-  // Join করলেও session এ mark করবো — যাতে এই সেশনে আর বিরক্ত না করে
-  sessionStorage.setItem(TG_SESSION_KEY, 'true');
+  // সবসময় ২ সেকেন্ড পর পপআপ দেখাবে — প্রতি রিফ্রেশে/লগইনে
   setTimeout(() => {
-    document.getElementById('tg-modal').classList.add('hidden');
-  }, 500);
-  // ইউজার চ্যানেলে গেছে — দারুণ!
-  // পরের বার রিফ্রেশ/লগইনে আবার দেখাবো
+    const modal = document.getElementById('tg-modal');
+    if (modal) {
+      modal.classList.remove('hidden');
+      console.log('✅ Popup shown');
+    } else {
+      console.log('❌ Modal not found');
+    }
+  }, 2500);
 }
 
 function showTelegramPopup() {
-  // Floating button থেকে call হলে — সরাসরি দেখাও
-  document.getElementById('tg-modal').classList.remove('hidden');
+  const modal = document.getElementById('tg-modal');
+  if (modal) modal.classList.remove('hidden');
 }
-  /* ---- Product Rendering ---- */
-  function renderProducts(products) {
-    const grid  = document.getElementById('products-grid');
-    const empty = document.getElementById('empty-state');
-    const loader = document.getElementById('products-loader');
-    const count  = document.getElementById('products-count');
 
-    loader.style.display = 'none';
+function closeTelegramPopup() {
+  const modal = document.getElementById('tg-modal');
+  if (modal) modal.classList.add('hidden');
+}
 
-    if (!products.length) {
-      grid.style.display  = 'none';
-      empty.style.display = 'block';
-      count.textContent   = '';
-      return;
-    }
+function markTelegramShown() {
+  // Join বাটনে ক্লিক করলে পপআপ Hide হবে
+  // কিন্তু পরের রিফ্রেশে আবার দেখাবে
+  const modal = document.getElementById('tg-modal');
+  if (modal) {
+    setTimeout(() => {
+      modal.classList.add('hidden');
+    }, 300);
+  }
+}
 
-    count.textContent   = `${products.length}টি প্রোডাক্ট`;
-    empty.style.display = 'none';
-    grid.style.display  = 'grid';
+/* ---- Product Rendering ---- */
+function renderProducts(products) {
+  const grid   = document.getElementById('products-grid');
+  const empty  = document.getElementById('empty-state');
+  const loader = document.getElementById('products-loader');
+  const count  = document.getElementById('products-count');
 
+  if (loader) loader.style.display = 'none';
+
+  if (!products.length) {
+    if (grid) grid.style.display = 'none';
+    if (empty) empty.style.display = 'block';
+    if (count) count.textContent = '';
+    return;
+  }
+
+  if (count) count.textContent = `${products.length}টি প্রোডাক্ট`;
+  if (empty) empty.style.display = 'none';
+  if (grid) {
+    grid.style.display = 'grid';
     grid.innerHTML = products.map((p, i) => `
       <div class="product-card" style="animation-delay:${i * 0.06}s">
         <div class="product-image-wrap">
-          <img src="${p.image || 'https://via.placeholder.com/400x300/16161f/ff6b00?text=No+Image'}"
+          <img src="${p.image || 'https://via.placeholder.com/400x300/161B22/5CE1E6?text=No+Image'}"
                alt="${escHtml(p.title)}" loading="lazy"
-               onerror="this.src='https://via.placeholder.com/400x300/16161f/ff6b00?text=No+Image'" />
+               onerror="this.src='https://via.placeholder.com/400x300/161B22/5CE1E6?text=No+Image'" />
         </div>
         <div class="product-body">
           <div class="product-title">${escHtml(p.title)}</div>
@@ -383,10 +385,12 @@ function showTelegramPopup() {
       </div>
     `).join('');
   }
+}
 
-  function buildCategoryFilters(products) {
-    const cats = ['all', ...new Set(products.map(p => p.category).filter(Boolean))];
-    const row  = document.getElementById('filter-row');
+function buildCategoryFilters(products) {
+  const cats = ['all', ...new Set(products.map(p => p.category).filter(Boolean))];
+  const row  = document.getElementById('filter-row');
+  if (row) {
     row.innerHTML = cats.map(c => `
       <div class="filter-chip ${c === 'all' ? 'active' : ''}"
            onclick="filterCategory('${escHtml(c)}', this)">
@@ -394,66 +398,69 @@ function showTelegramPopup() {
       </div>
     `).join('');
   }
+}
 
-  function filterCategory(cat, el) {
-    currentCategory = cat;
-    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-    el.classList.add('active');
-    applyFilters();
+function filterCategory(cat, el) {
+  currentCategory = cat;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  if (el) el.classList.add('active');
+  applyFilters();
+}
+
+function handleSearch(val) {
+  searchQuery = val.toLowerCase().trim();
+  applyFilters();
+}
+
+function applyFilters() {
+  const products = window._allProducts || [];
+  let filtered = products;
+  if (currentCategory !== 'all') filtered = filtered.filter(p => p.category === currentCategory);
+  if (searchQuery) filtered = filtered.filter(p =>
+    p.title?.toLowerCase().includes(searchQuery) ||
+    p.description?.toLowerCase().includes(searchQuery)
+  );
+  renderProducts(filtered);
+}
+
+function trackClick(id) {
+  console.log('Product clicked:', id);
+}
+
+function handleLogout() {
+  if (confirm('আপনি কি লগআউট করতে চান?')) {
+    if (window._signOut) window._signOut();
   }
+}
 
-  let searchQuery = '';
-  function handleSearch(val) {
-    searchQuery = val.toLowerCase().trim();
-    applyFilters();
-  }
+/* ---- Helpers ---- */
+function escHtml(str) {
+  const d = document.createElement('div');
+  d.appendChild(document.createTextNode(str || ''));
+  return d.innerHTML;
+}
 
-  function applyFilters() {
-    const products = window._allProducts || [];
-    let filtered = products;
-    if (currentCategory !== 'all') filtered = filtered.filter(p => p.category === currentCategory);
-    if (searchQuery) filtered = filtered.filter(p =>
-      p.title?.toLowerCase().includes(searchQuery) ||
-      p.description?.toLowerCase().includes(searchQuery)
-    );
-    renderProducts(filtered);
-  }
+function formatPrice(price) {
+  const n = parseFloat(price);
+  if (isNaN(n)) return price;
+  return n.toLocaleString('en-BD');
+}
 
-  function trackClick(id) {
-    console.log('Product clicked:', id);
-  }
+function showToastGlobal(msg, type = 'info') {
+  const wrap = document.getElementById('toast');
+  if (!wrap) return;
+  const item = document.createElement('div');
+  item.className = `toast-item ${type}`;
+  item.textContent = msg;
+  wrap.appendChild(item);
+  setTimeout(() => {
+    item.style.animation = 'toastOut 0.3s ease forwards';
+    setTimeout(() => item.remove(), 300);
+  }, 3500);
+}
 
-  function handleLogout() {
-    if (confirm('আপনি কি লগআউট করতে চান?')) {
-      window._signOut && window._signOut();
-    }
-  }
-
-  function escHtml(str) {
-    const d = document.createElement('div');
-    d.appendChild(document.createTextNode(str || ''));
-    return d.innerHTML;
-  }
-
-  function formatPrice(price) {
-    const n = parseFloat(price);
-    if (isNaN(n)) return price;
-    return n.toLocaleString('en-BD');
-  }
-
-  function showToastGlobal(msg, type = 'info') {
-    const wrap = document.getElementById('toast');
-    const item = document.createElement('div');
-    item.className = `toast-item ${type}`;
-    item.textContent = msg;
-    wrap.appendChild(item);
-    setTimeout(() => {
-      item.style.animation = 'toastOut 0.3s ease forwards';
-      setTimeout(() => item.remove(), 300);
-    }, 3500);
-  }
-
-  let currentCategory = 'all';
+/* ---- Debug: Check if popup called ---- */
+console.log('🚀 Script loaded. Popup will show after 2.5 seconds');
 </script>
 </body>
   </html>

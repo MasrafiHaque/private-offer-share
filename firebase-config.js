@@ -3,12 +3,13 @@
 //  Replace these values with YOUR Firebase project credentials
 // ============================================================
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyClg_colIw3qLzE3DefSeEJP98i37kI-dI",
+  authDomain: "rivate-offer-share.firebaseapp.com",
+  projectId: "rivate-offer-share",
+  storageBucket: "rivate-offer-share.firebasestorage.app",
+  messagingSenderId: "485885612132",
+  appId: "1:485885612132:web:cefc9d9b88c0dc01544f71",
+  measurementId: "G-KWNSXRW4CB"
 };
 
 // Cloudinary Configuration
@@ -18,7 +19,7 @@ const CLOUDINARY_CONFIG = {
 };
 
 // Telegram Channel Link
-const TELEGRAM_LINK = "https://t.me/YOUR_CHANNEL";
+const TELEGRAM_LINK = "https://t.me/+RUCXh7X3MPRiYWVl";
 
 // Admin UID — set this to your Firebase Auth UID after first login
 // Go to Firebase Console → Authentication → Users → copy your UID

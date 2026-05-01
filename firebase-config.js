@@ -14,8 +14,8 @@ const firebaseConfig = {
 
 // Cloudinary Configuration
 const CLOUDINARY_CONFIG = {
-  cloudName: "YOUR_CLOUD_NAME",
-  uploadPreset: "YOUR_UPLOAD_PRESET"  // unsigned upload preset
+  cloudName: "dbrrxrbb9",
+  uploadPreset: "private-offer-share"  // unsigned upload preset
 };
 
 // Telegram Channel Link

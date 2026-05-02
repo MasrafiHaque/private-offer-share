@@ -1,677 +1,168 @@
-/* ============================================================
-   Private Offer Share — Premium Dark Mode
-   Accent: Cyan (#5CE1E6)
-   Bengali Font: Hind Siliguri + Noto Sans Bengali
-   English Font: Montserrat (Headings) + Inter (Body)
-   ============================================================ */
+/* ======================
+   ফাইনাল style.css 
+   (ডার্ক মোড + কালার থিম + UI ফিক্স)
+====================== */
 
-/* ---- Bengali & English Font Import ---- */
-@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Noto+Sans+Bengali:wght@300;400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
+/* 1. হিন্দ সিলিগুরি ফন্ট ইমপোর্ট */
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
 
-:root {
-  /* Colors */
-  --bg-primary:    #0B1117;
-  --bg-secondary:  #111820;
-  --bg-card:       #161B22;
-  --bg-card-hover: #1C232C;
-  
-  --accent:        #5CE1E6;
-  --accent-light:  #7DE8EC;
-  --accent-glow:   rgba(92, 225, 230, 0.12);
-  --accent-strong: rgba(92, 225, 230, 0.25);
-  
-  --text-primary:  #E6EDF3;
-  --text-secondary:#8B949E;
-  --text-muted:    #5D6670;
-  
-  --border:        rgba(255, 255, 255, 0.06);
-  --border-accent: rgba(92, 225, 230, 0.25);
-  
-  --success:       #22c55e;
-  --error:         #ef4444;
-  
-  /* Radii */
-  --radius-sm:     6px;
-  --radius-md:     10px;
-  --radius-lg:     16px;
-  
-  /* Shadows */
-  --shadow-card:   0 2px 12px rgba(0, 0, 0, 0.3);
-  --shadow-glow:   0px 0px 18px rgba(92, 225, 230, 0.35);
-  --shadow-glow-lg: 0px 0px 25px rgba(92, 225, 230, 0.5);
-  
-  /* Transitions */
-  --transition:    all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  
-  /* Fonts */
-  --font-display-bn: 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
-  --font-body-bn:    'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
-  --font-display-en: 'Montserrat', sans-serif;
-  --font-body-en:    'Inter', sans-serif;
+/* 2. গ্লোবাল স্টাইল */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
-
-/* ---- Reset ---- */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
 
 body {
-  font-family: var(--font-body-bn);
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  min-height: 100vh;
-  line-height: 1.65;
-  -webkit-font-smoothing: antialiased;
-  letter-spacing: -0.01em;
-  overflow-x: hidden;
-  font-weight: 400;
+    font-family: 'Hind Siliguri', sans-serif;
+    background-color: #ffffff;
+    color: #1a1a1a;
+    transition: all 0.3s ease;
 }
 
-/* সফট সায়ান ব্লার — ব্যাকগ্রাউন্ড টপ */
-body::before {
-  content: '';
-  position: fixed;
-  top: -120px;
-  left: -120px;
-  width: 550px;
-  height: 550px;
-  background: radial-gradient(circle, rgba(92, 225, 230, 0.05) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
+/* 3. ডার্ক মোড থিম (আগের ডিজাইন রাখা) */
+body.dark-mode {
+    background-color: #121212;
+    color: #f0f0f0;
 }
 
-a { text-decoration: none; color: inherit; }
-img { max-width: 100%; display: block; }
-button { font-family: var(--font-body-bn); cursor: pointer; border: none; outline: none; }
-input, textarea, select { font-family: var(--font-body-bn); outline: none; }
-
-/* ---- Headings (Bengali) ---- */
-h1, h2, h3, h4, h5 { 
-  font-family: var(--font-display-bn); 
-  font-weight: 700; 
-  line-height: 1.3; 
-  letter-spacing: -0.02em;
+/* 4. কন্টেইনার */
+.container, 
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
-.container { max-width: 1280px; margin: 0 auto; padding: 0 16px; }
-.flex-center { display: flex; align-items: center; justify-content: center; }
-.text-accent { color: var(--accent); }
-
-/* ============================================
-   BUTTONS
-   ============================================ */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 10px 20px;
-  border-radius: var(--radius-sm);
-  font-weight: 600;
-  font-size: 0.88rem;
-  transition: var(--transition);
-  white-space: nowrap;
-  font-family: var(--font-body-bn);
-}
-
-.btn-primary {
-  background: var(--accent);
-  color: #0B1117;
-  box-shadow: var(--shadow-glow);
-  font-weight: 700;
-}
-.btn-primary:hover {
-  background: var(--accent-light);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-glow-lg);
-}
-
-.btn-outline {
-  background: transparent;
-  border: 1.5px solid var(--border-accent);
-  color: var(--accent);
-}
-.btn-outline:hover { background: var(--accent-glow); transform: translateY(-1px); }
-
-.btn-ghost {
-  background: rgba(255, 255, 255, 0.03);
-  color: var(--text-primary);
-  border: 1px solid var(--border);
-}
-.btn-ghost:hover { background: rgba(255, 255, 255, 0.06); }
-
-/* Logout Button — Special Style */
-.btn-logout {
-  background: transparent;
-  color: var(--text-secondary);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
-  font-weight: 600;
-  font-size: 0.82rem;
-  transition: var(--transition);
-  cursor: pointer;
-}
-.btn-logout:hover {
-  background: rgba(239, 68, 68, 0.12);
-  border-color: rgba(239, 68, 68, 0.5);
-  color: #ef4444;
-  transform: translateY(-1px);
-}
-
-.btn-danger {
-  background: rgba(239, 68, 68, 0.1);
-  color: #ef4444;
-  border: 1px solid rgba(239, 68, 68, 0.2);
-}
-.btn-sm { padding: 7px 14px; font-size: 0.78rem; }
-.btn-full { width: 100%; }
-
-/* ============================================
-   FORM
-   ============================================ */
-.form-group { display: flex; flex-direction: column; gap: 5px; }
-.form-label { font-size: 0.82rem; font-weight: 500; color: var(--text-secondary); }
-.form-input {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text-primary);
-  padding: 12px 16px;
-  font-size: 0.9rem;
-  transition: var(--transition);
-  width: 100%;
-  font-family: var(--font-body-bn);
-}
-.form-input:focus {
-  border-color: var(--accent);
-  background: rgba(92, 225, 230, 0.03);
-  box-shadow: 0 0 0 3px rgba(92, 225, 230, 0.08);
-}
-.form-input::placeholder { color: var(--text-muted); }
-
-/* ============================================
-   NAVBAR
-   ============================================ */
-.navbar {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: rgba(11, 17, 23, 0.9);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
-  padding: 0 16px;
-}
-.navbar-inner {
-  max-width: 1280px;
-  margin: 0 auto;
-  height: 62px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.navbar-logo {
-  font-family: var(--font-display-bn);
-  font-size: 1.2rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: -0.02em;
-}
-.navbar-logo span { color: var(--accent); }
-.navbar-actions { display: flex; align-items: center; gap: 10px; }
-.user-badge {
-  background: var(--accent-glow);
-  border: 1px solid var(--border-accent);
-  color: var(--accent);
-  padding: 6px 14px;
-  border-radius: 100px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  max-width: 140px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-@media (max-width: 480px) {
-  .navbar-logo { font-size: 1rem; }
-  .user-badge { display: none; }
-}
-
-/* ============================================
-   TOAST
-   ============================================ */
-#toast {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.toast-item {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  color: var(--text-primary);
-  padding: 12px 18px;
-  border-radius: var(--radius-sm);
-  font-size: 0.84rem;
-  box-shadow: var(--shadow-card);
-  animation: toastIn 0.3s ease forwards;
-  max-width: 320px;
-  border-left: 3px solid var(--accent);
-}
-.toast-item.success { border-left-color: var(--success); }
-.toast-item.error   { border-left-color: var(--error); }
-
-@keyframes toastIn {
-  from { opacity: 0; transform: translateX(20px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-@keyframes toastOut {
-  from { opacity: 1; transform: translateX(0); }
-  to   { opacity: 0; transform: translateX(20px); }
-}
-
-/* ============================================
-   MODAL
-   ============================================ */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(8px);
-  z-index: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-}
-.modal-overlay.hidden { display: none; }
-.modal-box {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-top: 2px solid var(--accent);
-  border-radius: var(--radius-lg);
-  padding: 32px 28px;
-  max-width: 400px;
-  width: 100%;
-  position: relative;
-  animation: slideUp 0.3s ease;
-  box-shadow: var(--shadow-card), 0 0 30px rgba(92, 225, 230, 0.08);
-}
-.modal-close {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border);
-  color: var(--text-secondary);
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  font-size: 0.9rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.modal-close:hover { background: rgba(255, 255, 255, 0.1); }
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(30px) scale(0.96); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-/* ============================================
-   SPINNER
-   ============================================ */
-.spinner {
-  width: 34px;
-  height: 34px;
-  border: 3px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* ============================================
-   HERO SECTION
-   ============================================ */
-.hero {
-  padding: 70px 20px 60px;
-  text-align: center;
-  position: relative;
-}
-
-.hero-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--accent-glow);
-  border: 1px solid var(--border-accent);
-  color: var(--accent);
-  padding: 7px 18px;           /* ✅ Increased padding */
-  border-radius: 100px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-bottom: 24px;
+/* 5. হিরো সেকশন */
+.hero-section {
+    text-align: center;
+    padding: 50px 20px;
 }
 
 .hero-title {
-  font-family: var(--font-display-bn);
-  font-size: clamp(1.8rem, 4.5vw, 2.6rem);
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: -0.03em;
-  margin-bottom: 16px;
-  line-height: 1.2;
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 20px; /* মোবাইলের জন্য মার্জিন বাড়ানো */
 }
 
-.hero-subtitle {
-  color: var(--text-secondary);
-  font-size: 1rem;
-  max-width: 560px;
-  margin: 0 auto 36px;         /* ✅ Increased margin-bottom */
-  line-height: 1.7;
-  font-weight: 400;
+.hero-description {
+    font-size: 18px;
+    margin-bottom: 30px;
 }
 
-/* ============================================
-   SEARCH BAR
-   ============================================ */
-.search-wrap {
-  max-width: 480px;
-  margin: 0 auto 44px;         /* ✅ More breathing room */
-  position: relative;
-}
-.search-input {
-  width: 100%;
-  background: var(--bg-card);
-  border: 1.5px solid var(--border);
-  border-radius: 100px;
-  padding: 14px 52px 14px 22px;  /* ✅ Increased left padding */
-  color: var(--text-primary);
-  font-size: 0.92rem;
-  font-family: var(--font-body-bn);
-  transition: var(--transition);
-  line-height: 1.5;
-}
-.search-input:focus { 
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(92, 225, 230, 0.06);
-}
-.search-input::placeholder {
-  color: var(--text-muted);
-  font-size: 0.88rem;
-}
-.search-icon {
-  position: absolute;
-  right: 18px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-muted);
-  pointer-events: none;
+/* 6. সার্চ বার */
+.search-bar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
 }
 
-/* ============================================
-   FILTER CHIPS
-   ============================================ */
-.filter-row {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding-bottom: 4px;
-  margin-bottom: 28px;
-  scrollbar-width: none;
-}
-.filter-row::-webkit-scrollbar { display: none; }
-.filter-chip {
-  flex-shrink: 0;
-  padding: 8px 18px;
-  border-radius: 100px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: var(--transition);
-  font-family: var(--font-body-bn);
-}
-.filter-chip.active {
-  background: var(--accent-glow);
-  border-color: var(--accent);
-  color: var(--accent);
+.search-bar input {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px 16px;
+    padding-left: 15px; /* ইউজারের আবেদন অনুযায়ী */
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    transition: 0.2s;
 }
 
-/* ============================================
-   SECTION HEADER
-   ============================================ */
-.section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 24px;
-}
-.section-title {
-  font-family: var(--font-display-bn);
-  font-size: 1.4rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: -0.02em;
-  color: var(--text-primary);
-}
-.section-title span {
-  color: #5CE1E6;              /* ✅ Exact brand cyan */
-  font-weight: 800;
-}
-.products-count {
-  font-size: 0.82rem;
-  color: var(--text-muted);
-  font-family: var(--font-body-bn);
+body.dark-mode .search-bar input {
+    background-color: #2c2c2c;
+    border-color: #555;
+    color: #fff;
 }
 
-/* ============================================
-   PRODUCT GRID
-   ============================================ */
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
+/* 7. বাটন এলাইনমেন্ট ও স্টাইল */
+.button-all-products {
+    display: flex;
+    justify-content: center; /* বাটন কেন্দ্রীভূত */
+    margin-top: 20px;
 }
 
-.product-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  transition: var(--transition);
-  animation: cardIn 0.4s ease both;
-}
-.product-card:hover {
-  border-color: var(--border-accent);
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(92, 225, 230, 0.06);
-}
-
-.product-image-wrap {
-  aspect-ratio: 4/3;
-  background: var(--bg-secondary);
-  overflow: hidden;
-}
-.product-image-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s ease;
-}
-.product-card:hover .product-image-wrap img { transform: scale(1.04); }
-
-.product-body { padding: 18px; }
-.product-title {
-  font-family: var(--font-display-bn);
-  font-size: 0.95rem;
-  font-weight: 700;
-  margin-bottom: 6px;
-  line-height: 1.4;
-}
-.product-desc {
-  font-size: 0.82rem;
-  color: var(--text-secondary);
-  margin-bottom: 10px;
-  line-height: 1.6;
-}
-.product-price {
-  font-family: var(--font-display-bn);
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: var(--accent);
+.button-all-products button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 24px; /* বাম ও ডানে প্যাডিং বাড়ানো */
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-family: 'Hind Siliguri', sans-serif;
 }
 
-.product-actions { padding: 0 18px 18px; }
-.buy-btn {
-  width: 100%;
-  padding: 12px;
-  background: var(--accent);
-  color: #0B1117;
-  border-radius: var(--radius-sm);
-  font-weight: 700;
-  font-size: 0.88rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: var(--transition);
-  box-shadow: var(--shadow-glow);
-  font-family: var(--font-display-bn);
-}
-.buy-btn:hover {
-  box-shadow: var(--shadow-glow-lg);
-  transform: translateY(-2px);
+.button-all-products button:hover {
+    background-color: #0056b3;
 }
 
-@keyframes cardIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
+body.dark-mode .button-all-products button {
+    background-color: #1e88e5;
 }
 
-/* ============================================
-   EMPTY STATE
-   ============================================ */
-.empty-state {
-  text-align: center;
-  padding: 70px 16px;
-  color: var(--text-muted);
-}
-.empty-state h3 {
-  font-family: var(--font-display-bn);
-  margin-bottom: 8px;
-}
-
-/* ============================================
-   FOOTER
-   ============================================ */
-.footer {
-  text-align: center;
-  padding: 32px 16px;
-  border-top: 1px solid var(--border);
-  color: var(--text-muted);
-  font-size: 0.8rem;
-  margin-top: 70px;
-  font-family: var(--font-body-bn);
+/* 8. পুরনো কালার থিম (রেখে দেওয়া) */
+.theme-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    z-index: 1000;
 }
 
-/* ============================================
-   PAGE LOADER
-   ============================================ */
-#page-loader {
-  position: fixed;
-  inset: 0;
-  background: var(--bg-primary);
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 18px;
-}
-#page-loader.fade-out { opacity: 0; pointer-events: none; transition: opacity 0.3s; }
-#page-loader .loader-logo {
-  font-family: var(--font-display-bn);
-  font-weight: 800;
-  text-transform: uppercase;
-  font-size: 1.4rem;
-}
-#page-loader .loader-logo span { color: var(--accent); }
-
-/* ============================================
-   ADMIN
-   ============================================ */
-.admin-layout { display: flex; min-height: 100vh; }
-.admin-sidebar { width: 220px; background: var(--bg-secondary); border-right: 1px solid var(--border); flex-shrink: 0; padding: 20px 0; }
-.admin-content { flex: 1; padding: 28px; }
-.admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
-.admin-page-title { font-size: 1.3rem; text-transform: uppercase; }
-.sidebar-link {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 11px 22px;
-  color: var(--text-secondary);
-  font-weight: 500;
-  font-size: 0.86rem;
-  cursor: pointer;
-  font-family: var(--font-body-bn);
-}
-.sidebar-link.active { color: var(--accent); background: var(--accent-glow); border-right: 2px solid var(--accent); }
-.stats-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; margin-bottom: 28px; }
-.stat-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 18px;
-}
-.stat-value { font-size: 1.8rem; font-weight: 800; color: var(--accent); }
-.stat-label { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
-.products-table { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); }
-.table-header, .table-row {
-  display: grid;
-  grid-template-columns: 50px 1fr 90px 110px 160px;
-  gap: 12px;
-  padding: 12px 16px;
-  align-items: center;
-  font-size: 0.82rem;
-}
-.table-header { background: rgba(92,225,230,0.03); font-weight: 700; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); }
-.table-row { border-bottom: 1px solid var(--border); }
-.table-thumb { width: 38px; height: 38px; border-radius: 4px; object-fit: cover; }
-.table-actions { display: flex; gap: 6px; }
-
-/* ============================================
-   RESPONSIVE
-   ============================================ */
+/* 9. মোবাইল রেসপনসিভ (সব এলিমেন্ট সেন্টার) */
 @media (max-width: 768px) {
-  .products-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
-  .hero { padding: 44px 16px 36px; }
-  .hero-title { font-size: 1.5rem; }
-  .hero-eyebrow { padding: 6px 14px; font-size: 0.72rem; }
-  .admin-sidebar { display: none; }
-  .table-header, .table-row { grid-template-columns: 40px 1fr 80px; }
-  .hide-mobile { display: none; }
+    .main-container,
+    .hero-section,
+    .search-bar,
+    .button-all-products {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .hero-title {
+        font-size: 28px;
+        margin-bottom: 20px;
+    }
+
+    .hero-description {
+        font-size: 16px;
+    }
+
+    .search-bar input {
+        width: 90%;
+        padding-left: 15px;
+    }
+
+    .button-all-products button {
+        width: auto;
+        min-width: 200px;
+        padding: 10px 24px;
+    }
 }
 
-@media (max-width: 480px) {
-  .products-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .product-body { padding: 12px; }
-  .product-actions { padding: 0 12px 12px; }
-  .hero { padding: 32px 12px 24px; }
-  .hero-title { font-size: 1.3rem; }
-  .section-title { font-size: 1.1rem; }
-  .search-input { padding: 12px 44px 12px 18px; font-size: 0.85rem; }
-  .modal-box { padding: 22px 16px; }
+/* 10. অতিরিক্ত: লাইট-থিম বাটন */
+.theme-toggle {
+    background: #333;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-family: 'Hind Siliguri', sans-serif;
+}
+
+body.dark-mode .theme-toggle {
+    background: #f0f0f0;
+    color: #121212;
 }

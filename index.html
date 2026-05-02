@@ -138,6 +138,27 @@
       .tg-bubble { display: none; }
     }
 
+    /* ✅ Header Fix — Single Line on Mobile */
+    .navbar-logo {
+      font-family: var(--font-display-bn);
+      font-size: 1.2rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      white-space: nowrap;        /* ✅ One Line */
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 200px;           /* ✅ Mobile safe */
+    }
+    .navbar-logo span { color: var(--accent); }
+
+    @media (max-width: 480px) {
+      .navbar-logo {
+        font-size: 0.95rem;       /* ✅ Smaller on Mobile */
+        max-width: 160px;
+      }
+    }
+
     /* ---- Products Section ---- */
     #products-loader { padding: 60px 0; }
     .products-count { 
@@ -180,6 +201,7 @@
 <!-- ===== NAVBAR ===== -->
 <nav class="navbar">
   <div class="navbar-inner">
+    <!-- ✅ Fixed: Single Line on Mobile -->
     <div class="navbar-logo">Private<span>Offer</span> Share</div>
     <div class="navbar-actions">
       <div class="user-badge" id="user-badge">লোড হচ্ছে...</div>
@@ -193,12 +215,15 @@
   <div class="hero-eyebrow">
     🔥 সেরা দারাজ ডিল
   </div>
-  <h1 class="hero-title">কিনুন বুঝে,<br><span class="text-accent">বাঁচান অনেক।</span></h1>
-  <p class="hero-subtitle">দারাজের সেরা ডিলগুলো আমাদের বিশেষ টিমের মাধ্যমে সরাসরি বাছাই করা। এক ক্লিকেই কিনুন আপনার পছন্দের পণ্য।</p>
+  <!-- ✅ Updated Main Title -->
+  <h1 class="hero-title">সাশ্রয়ী কেনাকাটায়,<br><span class="text-accent">সেরা ডিল।</span></h1>
+  
+  <!-- ✅ Updated Hero Description -->
+  <p class="hero-subtitle">দারাজের হাজারো অফার থেকে সেরা ডিলগুলো আমরা খুঁজে বের করি শুধুমাত্র আপনার জন্য। এক ক্লিকেই লুফে নিন পছন্দের পণ্যটি।</p>
 
-  <!-- Search Bar -->
+  <!-- ✅ Updated Search Placeholder -->
   <div class="search-wrap">
-    <input type="search" class="search-input" id="search-input" placeholder="প্রোডাক্ট খুঁজুন..." oninput="handleSearch(this.value)" />
+    <input type="search" class="search-input" id="search-input" placeholder="পছন্দের পণ্যটি খুঁজুন..." oninput="handleSearch(this.value)" />
     <div class="search-icon">
       <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
@@ -216,9 +241,9 @@
       <div class="filter-chip active" onclick="filterCategory('all', this)">সব প্রোডাক্ট</div>
     </div>
 
-    <!-- Section Header -->
+    <!-- ✅ Updated Section Header -->
     <div class="section-header">
-      <h2 class="section-title">ফিচার্ড <span>প্রোডাক্ট</span></h2>
+      <h2 class="section-title">আজকের <span>বিশেষ অফার</span></h2>
       <span class="products-count" id="products-count"></span>
     </div>
 
@@ -282,38 +307,27 @@
 
   let allProducts = [];
 
-  // ============================================
-  // AUTH STATE — লগইন চেক + পণ্য লোড + পপআপ
-  // ============================================
+  // Auth State
   onAuthStateChanged(auth, async user => {
     if (!user) {
       window.location.href = 'auth.html';
       return;
     }
 
-    // UI Update
     const displayName = user.displayName || user.email?.split('@')[0] || 'ইউজার';
     document.getElementById('user-badge').textContent = '👤 ' + displayName;
     document.getElementById('tg-join-link').href = TELEGRAM_LINK;
 
-    // Load Products
     await loadProducts();
-
-    // Hide Loader
     hideLoader();
 
-    // ✅ Show Telegram Popup (প্রতি লগইন/রিফ্রেশে)
     setTimeout(() => {
       checkTelegramPopup();
     }, 500);
   });
 
-  // Logout function
   window._signOut = () => signOut(auth);
 
-  // ============================================
-  // LOAD PRODUCTS FROM FIRESTORE
-  // ============================================
   async function loadProducts() {
     try {
       const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
@@ -334,25 +348,17 @@
   }
 </script>
 
-<!-- ============================================ -->
-<!-- FRONTEND SCRIPTS (UI + Telegram Popup)       -->
-<!-- ============================================ -->
 <script>
   let currentCategory = 'all';
   let searchQuery = '';
 
   // ============================================
-  // TELEGRAM POPUP — প্রতি সেশন/রিফ্রেশে দেখাবে
+  // TELEGRAM POPUP
   // ============================================
   function checkTelegramPopup() {
-    // Direct call — no sessionStorage check
-    // প্রতিবার রিফ্রেশ/লগইনে দেখাবে
     setTimeout(() => {
       const modal = document.getElementById('tg-modal');
-      if (modal) {
-        modal.classList.remove('hidden');
-        console.log('✅ Telegram Popup Shown');
-      }
+      if (modal) modal.classList.remove('hidden');
     }, 2500);
   }
 
@@ -367,13 +373,9 @@
   }
 
   function markTelegramShown() {
-    // Join করলেও কিছু সেভ করবো না
-    // পরের রিফ্রেশে আবার দেখাবে
     const modal = document.getElementById('tg-modal');
     if (modal) {
-      setTimeout(() => {
-        modal.classList.add('hidden');
-      }, 300);
+      setTimeout(() => modal.classList.add('hidden'), 300);
     }
   }
 
@@ -465,18 +467,12 @@
     console.log('Product clicked:', id);
   }
 
-  // ============================================
-  // LOGOUT
-  // ============================================
   function handleLogout() {
     if (confirm('আপনি কি লগআউট করতে চান?')) {
       if (window._signOut) window._signOut();
     }
   }
 
-  // ============================================
-  // HELPERS
-  // ============================================
   function escHtml(str) {
     const d = document.createElement('div');
     d.appendChild(document.createTextNode(str || ''));

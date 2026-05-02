@@ -2,49 +2,84 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Private Offer Share — সেরা ডিল</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Private Offer Share — সেরা দারাজ ডিল</title>
   <meta name="description" content="দারাজের সেরা অফার ও ডিল খুঁজুন। এক ক্লিকে কিনুন।" />
   <link rel="stylesheet" href="style.css" />
   <style>
+    /* ============================================
+       PAGE-SPECIFIC STYLES
+       ============================================ */
+    
     /* ---- Telegram Popup ---- */
     .tg-popup .modal-box {
       text-align: center;
-      background: linear-gradient(145deg, #0d1117, #1a1f2e);
-      border-color: rgba(41,182,246,0.25);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-top: 2px solid #5CE1E6;
       max-width: 380px;
+      padding: 32px 24px;
     }
     .tg-icon {
-      width: 72px;
-      height: 72px;
-      background: linear-gradient(135deg, #29b6f6, #0288d1);
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, #5CE1E6, #3DB8BD);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       margin: 0 auto 20px;
-      box-shadow: 0 8px 32px rgba(41,182,246,0.35);
+      box-shadow: 0px 0px 24px rgba(92, 225, 230, 0.4);
     }
-    .tg-icon svg { fill: white; width: 38px; height: 38px; }
-    .tg-popup h2 { font-size: 1.35rem; margin-bottom: 10px; }
-    .tg-popup p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin-bottom: 24px; }
+    .tg-icon svg { fill: white; width: 32px; height: 32px; }
+    .tg-popup h2 {
+      font-family: var(--font-display-bn);
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+    .tg-popup p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      margin-bottom: 24px;
+      font-family: var(--font-body-bn);
+    }
+    .tg-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(92, 225, 230, 0.1);
+      border: 1px solid rgba(92, 225, 230, 0.2);
+      color: #5CE1E6;
+      padding: 5px 14px;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      font-family: var(--font-body-bn);
+    }
     .tg-join-btn {
       width: 100%;
       padding: 14px;
-      background: linear-gradient(135deg, #29b6f6, #0288d1);
-      color: white;
+      background: linear-gradient(135deg, #5CE1E6, #3DB8BD);
+      color: #0B1117;
       border-radius: var(--radius-sm);
       font-weight: 700;
       font-size: 0.95rem;
-      font-family: var(--font-display);
+      font-family: var(--font-display-bn);
       transition: var(--transition);
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
       margin-bottom: 10px;
+      box-shadow: 0px 0px 18px rgba(92, 225, 230, 0.35);
     }
-    .tg-join-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(41,182,246,0.4); }
+    .tg-join-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0px 0px 25px rgba(92, 225, 230, 0.55);
+    }
     .tg-skip {
       width: 100%;
       padding: 11px;
@@ -54,83 +89,62 @@
       border: none;
       cursor: pointer;
       transition: var(--transition);
+      font-family: var(--font-body-bn);
     }
     .tg-skip:hover { color: var(--text-secondary); }
-    .tg-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(41,182,246,0.1);
-      border: 1px solid rgba(41,182,246,0.2);
-      color: #29b6f6;
-      padding: 4px 12px;
-      border-radius: 100px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      margin-bottom: 16px;
-    }
 
-    /* ---- Category filters ---- */
-    .filter-row {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-      margin-bottom: 28px;
-      scrollbar-width: none;
-    }
-    .filter-row::-webkit-scrollbar { display: none; }
-    .filter-chip {
-      flex-shrink: 0;
-      padding: 8px 18px;
-      border-radius: 100px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: var(--transition);
-      white-space: nowrap;
-    }
-    .filter-chip:hover, .filter-chip.active {
-      background: var(--accent-glow);
-      border-color: var(--border-accent);
-      color: var(--accent);
-    }
-
-    /* ---- Main layout ---- */
-    main { padding: 0 20px 60px; position: relative; z-index: 1; }
-    .products-section { max-width: 1280px; margin: 0 auto; }
-
-    /* ---- Telegram floating button ---- */
+    /* ---- Telegram Floating Button ---- */
     .tg-float {
       position: fixed;
-      bottom: 28px;
-      left: 28px;
+      bottom: 24px;
+      left: 24px;
       z-index: 200;
-      width: 52px;
-      height: 52px;
-      background: linear-gradient(135deg, #29b6f6, #0288d1);
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #5CE1E6, #3DB8BD);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 6px 24px rgba(41,182,246,0.4);
+      box-shadow: 0px 0px 20px rgba(92, 225, 230, 0.5);
       cursor: pointer;
-      transition: var(--transition);
-      animation: floatPulse 2.5s ease-in-out infinite;
+      transition: all 0.3s ease;
     }
-    .tg-float:hover { transform: scale(1.1); }
-    .tg-float svg { fill: white; width: 26px; height: 26px; }
-    @keyframes floatPulse {
-      0%,100% { box-shadow: 0 6px 24px rgba(41,182,246,0.4); }
-      50%      { box-shadow: 0 6px 32px rgba(41,182,246,0.65); }
+    .tg-float:hover {
+      transform: scale(1.1);
+      box-shadow: 0px 0px 30px rgba(92, 225, 230, 0.7);
+    }
+    .tg-float svg { fill: #0B1117; width: 24px; height: 24px; }
+    
+    .tg-bubble {
+      position: absolute;
+      left: 60px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-accent);
+      color: var(--accent);
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      white-space: nowrap;
+      animation: pulse 2s infinite;
+      font-family: var(--font-body-bn);
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    @media (max-width: 480px) {
+      .tg-bubble { display: none; }
     }
 
-    /* ---- Products section ---- */
+    /* ---- Products Section ---- */
     #products-loader { padding: 60px 0; }
-    .products-count { color: var(--text-muted); font-size: 0.85rem; }
+    .products-count { 
+      color: var(--text-muted); 
+      font-size: 0.82rem; 
+      font-family: var(--font-body-bn);
+    }
   </style>
 </head>
 <body>
@@ -145,7 +159,6 @@
 <div class="modal-overlay tg-popup hidden" id="tg-modal">
   <div class="modal-box">
     <div class="tg-icon">
-      <!-- Telegram SVG -->
       <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
       </svg>
@@ -157,7 +170,7 @@
     <h2>আমাদের টেলিগ্রাম চ্যানেলে যোগ দিন!</h2>
     <p>ফ্ল্যাশ সেল, এক্সক্লুসিভ ডিসকাউন্ট কোড এবং সেরা দারাজ ডিল সবার আগে পেতে <strong>এখনই জয়েন করুন</strong>।</p>
     <a id="tg-join-link" href="#" target="_blank" rel="noopener" class="tg-join-btn" onclick="markTelegramShown()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
       টেলিগ্রাম চ্যানেল জয়েন করুন
     </a>
     <button class="tg-skip" onclick="closeTelegramPopup()">পরে দেখব</button>
@@ -170,18 +183,20 @@
     <div class="navbar-logo">Private<span>Offer</span> Share</div>
     <div class="navbar-actions">
       <div class="user-badge" id="user-badge">লোড হচ্ছে...</div>
-      <button class="btn btn-ghost btn-sm" onclick="handleLogout()">লগআউট</button>
+      <button class="btn-logout" onclick="handleLogout()">লগআউট</button>
     </div>
   </div>
 </nav>
 
 <!-- ===== HERO ===== -->
 <div class="hero">
-  <div class="hero-eyebrow">🔥 সেরা দারাজ ডিল</div>
+  <div class="hero-eyebrow">
+    🔥 সেরা দারাজ ডিল
+  </div>
   <h1 class="hero-title">কিনুন বুঝে,<br><span class="text-accent">বাঁচান অনেক।</span></h1>
-  <p class="hero-subtitle">দারাজের সেরা প্রোডাক্ট হাতে-কলমে বাছাই করা। কিনতে চান? শুধু একটি ক্লিক।</p>
+  <p class="hero-subtitle">দারাজের সেরা ডিলগুলো আমাদের বিশেষ টিমের মাধ্যমে সরাসরি বাছাই করা। এক ক্লিকেই কিনুন আপনার পছন্দের পণ্য।</p>
 
-  <!-- Search -->
+  <!-- Search Bar -->
   <div class="search-wrap">
     <input type="search" class="search-input" id="search-input" placeholder="প্রোডাক্ট খুঁজুন..." oninput="handleSearch(this.value)" />
     <div class="search-icon">
@@ -192,9 +207,10 @@
   </div>
 </div>
 
-<!-- ===== MAIN ===== -->
+<!-- ===== MAIN CONTENT ===== -->
 <main>
   <div class="products-section">
+    
     <!-- Category Filters -->
     <div class="filter-row" id="filter-row">
       <div class="filter-chip active" onclick="filterCategory('all', this)">সব প্রোডাক্ট</div>
@@ -220,23 +236,25 @@
       <h3>কোনো প্রোডাক্ট পাওয়া যায়নি</h3>
       <p>অন্য কিছু খুঁজে দেখুন বা ক্যাটাগরি পরিবর্তন করুন।</p>
     </div>
+
   </div>
 </main>
 
 <!-- ===== FOOTER ===== -->
 <footer class="footer">
-  <div>© ২০২৪ Private Offer Share। সব প্রোডাক্ট রেফারেন্সের জন্য — ক্রয় করতে হবে <a href="https://www.daraz.com.bd" target="_blank">Daraz.com.bd</a> থেকে।</div>
+  <div>© ২০২৪ Private Offer Share। সব প্রোডাক্ট রেফারেন্সের জন্য — ক্রয় করতে হবে <a href="https://www.daraz.com.bd" target="_blank" style="color:var(--accent);">Daraz.com.bd</a> থেকে।</div>
 </footer>
 
-<!-- ===== TELEGRAM FLOAT BUTTON ===== -->
-<div class="tg-float" onclick="showTelegramPopup()" title="Join our Telegram">
+<!-- ===== TELEGRAM FLOATING BUTTON ===== -->
+<div class="tg-float" onclick="showTelegramPopup()" title="Join Telegram">
   <svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+  <span class="tg-bubble">💰 সেরা ডিল!</span>
 </div>
 
-<!-- Toast -->
+<!-- ===== TOAST ===== -->
 <div id="toast"></div>
 
-<!-- Firebase -->
+<!-- ===== FIREBASE + MAIN LOGIC ===== -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut }
@@ -244,7 +262,7 @@
   import { getFirestore, collection, getDocs, query, orderBy }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  // ✅ আপনার কনফিগারেশন
+  // ✅ আপনার Firebase Config
   const firebaseConfig = {
     apiKey: "AIzaSyClg_colIw3qLzE3DefSeEJP98i37kI-dI",
     authDomain: "rivate-offer-share.firebaseapp.com",
@@ -255,7 +273,8 @@
     measurementId: "G-KWNSXRW4CB"
   };
 
-  const TELEGRAM_LINK = "https://t.me/+RUCXh7X3MPRiYWVl"; // ✅ আপনার লিংক
+  // ✅ আপনার Telegram Channel Link
+  const TELEGRAM_LINK = "https://t.me/+RUCXh7X3MPRiYWVl";
 
   const app  = initializeApp(firebaseConfig);
   const auth = getAuth(app);
@@ -263,23 +282,39 @@
 
   let allProducts = [];
 
+  // ============================================
+  // AUTH STATE — লগইন চেক + পণ্য লোড + পপআপ
+  // ============================================
   onAuthStateChanged(auth, async user => {
     if (!user) {
       window.location.href = 'auth.html';
       return;
     }
+
+    // UI Update
     const displayName = user.displayName || user.email?.split('@')[0] || 'ইউজার';
     document.getElementById('user-badge').textContent = '👤 ' + displayName;
     document.getElementById('tg-join-link').href = TELEGRAM_LINK;
 
-    await loadProducts(db, getDocs, query, collection, orderBy);
+    // Load Products
+    await loadProducts();
+
+    // Hide Loader
     hideLoader();
-    checkTelegramPopup();
+
+    // ✅ Show Telegram Popup (প্রতি লগইন/রিফ্রেশে)
+    setTimeout(() => {
+      checkTelegramPopup();
+    }, 500);
   });
 
+  // Logout function
   window._signOut = () => signOut(auth);
 
-  async function loadProducts(db, getDocs, query, collection, orderBy) {
+  // ============================================
+  // LOAD PRODUCTS FROM FIRESTORE
+  // ============================================
+  async function loadProducts() {
     try {
       const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
       const snap = await getDocs(q);
@@ -299,168 +334,175 @@
   }
 </script>
 
+<!-- ============================================ -->
+<!-- FRONTEND SCRIPTS (UI + Telegram Popup)       -->
+<!-- ============================================ -->
 <script>
-  /* ============================================================
-   PRODUCT RENDERING + SEARCH + TELEGRAM POPUP (FIXED)
-   ============================================================ */
-let currentCategory = 'all';
-let searchQuery = '';
+  let currentCategory = 'all';
+  let searchQuery = '';
 
-/* ---- Telegram Popup (Fixed Version) ---- */
-function checkTelegramPopup() {
-  // সবসময় ২ সেকেন্ড পর পপআপ দেখাবে — প্রতি রিফ্রেশে/লগইনে
-  setTimeout(() => {
+  // ============================================
+  // TELEGRAM POPUP — প্রতি সেশন/রিফ্রেশে দেখাবে
+  // ============================================
+  function checkTelegramPopup() {
+    // Direct call — no sessionStorage check
+    // প্রতিবার রিফ্রেশ/লগইনে দেখাবে
+    setTimeout(() => {
+      const modal = document.getElementById('tg-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        console.log('✅ Telegram Popup Shown');
+      }
+    }, 2500);
+  }
+
+  function showTelegramPopup() {
+    const modal = document.getElementById('tg-modal');
+    if (modal) modal.classList.remove('hidden');
+  }
+
+  function closeTelegramPopup() {
+    const modal = document.getElementById('tg-modal');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  function markTelegramShown() {
+    // Join করলেও কিছু সেভ করবো না
+    // পরের রিফ্রেশে আবার দেখাবে
     const modal = document.getElementById('tg-modal');
     if (modal) {
-      modal.classList.remove('hidden');
-      console.log('✅ Popup shown');
-    } else {
-      console.log('❌ Modal not found');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 300);
     }
-  }, 2500);
-}
+  }
 
-function showTelegramPopup() {
-  const modal = document.getElementById('tg-modal');
-  if (modal) modal.classList.remove('hidden');
-}
+  // ============================================
+  // PRODUCT RENDERING
+  // ============================================
+  function renderProducts(products) {
+    const grid   = document.getElementById('products-grid');
+    const empty  = document.getElementById('empty-state');
+    const loader = document.getElementById('products-loader');
+    const count  = document.getElementById('products-count');
 
-function closeTelegramPopup() {
-  const modal = document.getElementById('tg-modal');
-  if (modal) modal.classList.add('hidden');
-}
+    if (loader) loader.style.display = 'none';
 
-function markTelegramShown() {
-  // Join বাটনে ক্লিক করলে পপআপ Hide হবে
-  // কিন্তু পরের রিফ্রেশে আবার দেখাবে
-  const modal = document.getElementById('tg-modal');
-  if (modal) {
+    if (!products.length) {
+      if (grid) grid.style.display = 'none';
+      if (empty) empty.style.display = 'block';
+      if (count) count.textContent = '';
+      return;
+    }
+
+    if (count) count.textContent = `${products.length}টি প্রোডাক্ট`;
+    if (empty) empty.style.display = 'none';
+    if (grid) {
+      grid.style.display = 'grid';
+      grid.innerHTML = products.map((p, i) => `
+        <div class="product-card" style="animation-delay:${i * 0.06}s">
+          <div class="product-image-wrap">
+            <img src="${p.image || 'https://via.placeholder.com/400x300/161B22/5CE1E6?text=No+Image'}"
+                 alt="${escHtml(p.title)}" loading="lazy"
+                 onerror="this.src='https://via.placeholder.com/400x300/161B22/5CE1E6?text=No+Image'" />
+          </div>
+          <div class="product-body">
+            <div class="product-title">${escHtml(p.title)}</div>
+            <div class="product-desc">${escHtml(p.description || '')}</div>
+            <div class="product-price">৳${formatPrice(p.price)}</div>
+          </div>
+          <div class="product-actions">
+            <a href="${escHtml(p.affiliateLink || '#')}" target="_blank" rel="noopener" class="buy-btn"
+               onclick="trackClick('${p.id}')">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z"/>
+              </svg>
+              দারাজে কিনুন
+            </a>
+          </div>
+        </div>
+      `).join('');
+    }
+  }
+
+  function buildCategoryFilters(products) {
+    const cats = ['all', ...new Set(products.map(p => p.category).filter(Boolean))];
+    const row  = document.getElementById('filter-row');
+    if (row) {
+      row.innerHTML = cats.map(c => `
+        <div class="filter-chip ${c === 'all' ? 'active' : ''}"
+             onclick="filterCategory('${escHtml(c)}', this)">
+          ${c === 'all' ? 'সব প্রোডাক্ট' : escHtml(c)}
+        </div>
+      `).join('');
+    }
+  }
+
+  function filterCategory(cat, el) {
+    currentCategory = cat;
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    if (el) el.classList.add('active');
+    applyFilters();
+  }
+
+  function handleSearch(val) {
+    searchQuery = val.toLowerCase().trim();
+    applyFilters();
+  }
+
+  function applyFilters() {
+    const products = window._allProducts || [];
+    let filtered = products;
+    if (currentCategory !== 'all') filtered = filtered.filter(p => p.category === currentCategory);
+    if (searchQuery) filtered = filtered.filter(p =>
+      p.title?.toLowerCase().includes(searchQuery) ||
+      p.description?.toLowerCase().includes(searchQuery)
+    );
+    renderProducts(filtered);
+  }
+
+  function trackClick(id) {
+    console.log('Product clicked:', id);
+  }
+
+  // ============================================
+  // LOGOUT
+  // ============================================
+  function handleLogout() {
+    if (confirm('আপনি কি লগআউট করতে চান?')) {
+      if (window._signOut) window._signOut();
+    }
+  }
+
+  // ============================================
+  // HELPERS
+  // ============================================
+  function escHtml(str) {
+    const d = document.createElement('div');
+    d.appendChild(document.createTextNode(str || ''));
+    return d.innerHTML;
+  }
+
+  function formatPrice(price) {
+    const n = parseFloat(price);
+    if (isNaN(n)) return price;
+    return n.toLocaleString('en-BD');
+  }
+
+  function showToastGlobal(msg, type = 'info') {
+    const wrap = document.getElementById('toast');
+    if (!wrap) return;
+    const item = document.createElement('div');
+    item.className = `toast-item ${type}`;
+    item.textContent = msg;
+    wrap.appendChild(item);
     setTimeout(() => {
-      modal.classList.add('hidden');
-    }, 300);
-  }
-}
-
-/* ---- Product Rendering ---- */
-function renderProducts(products) {
-  const grid   = document.getElementById('products-grid');
-  const empty  = document.getElementById('empty-state');
-  const loader = document.getElementById('products-loader');
-  const count  = document.getElementById('products-count');
-
-  if (loader) loader.style.display = 'none';
-
-  if (!products.length) {
-    if (grid) grid.style.display = 'none';
-    if (empty) empty.style.display = 'block';
-    if (count) count.textContent = '';
-    return;
+      item.style.animation = 'toastOut 0.3s ease forwards';
+      setTimeout(() => item.remove(), 300);
+    }, 3500);
   }
 
-  if (count) count.textContent = `${products.length}টি প্রোডাক্ট`;
-  if (empty) empty.style.display = 'none';
-  if (grid) {
-    grid.style.display = 'grid';
-    grid.innerHTML = products.map((p, i) => `
-      <div class="product-card" style="animation-delay:${i * 0.06}s">
-        <div class="product-image-wrap">
-          <img src="${p.image || 'https://via.placeholder.com/400x300/161B22/5CE1E6?text=No+Image'}"
-               alt="${escHtml(p.title)}" loading="lazy"
-               onerror="this.src='https://via.placeholder.com/400x300/161B22/5CE1E6?text=No+Image'" />
-        </div>
-        <div class="product-body">
-          <div class="product-title">${escHtml(p.title)}</div>
-          <div class="product-desc">${escHtml(p.description || '')}</div>
-          <div class="product-price">৳${formatPrice(p.price)}</div>
-        </div>
-        <div class="product-actions">
-          <a href="${escHtml(p.affiliateLink || '#')}" target="_blank" rel="noopener" class="buy-btn"
-             onclick="trackClick('${p.id}')">
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z"/>
-            </svg>
-            দারাজে কিনুন
-          </a>
-        </div>
-      </div>
-    `).join('');
-  }
-}
-
-function buildCategoryFilters(products) {
-  const cats = ['all', ...new Set(products.map(p => p.category).filter(Boolean))];
-  const row  = document.getElementById('filter-row');
-  if (row) {
-    row.innerHTML = cats.map(c => `
-      <div class="filter-chip ${c === 'all' ? 'active' : ''}"
-           onclick="filterCategory('${escHtml(c)}', this)">
-        ${c === 'all' ? 'সব প্রোডাক্ট' : escHtml(c)}
-      </div>
-    `).join('');
-  }
-}
-
-function filterCategory(cat, el) {
-  currentCategory = cat;
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-  if (el) el.classList.add('active');
-  applyFilters();
-}
-
-function handleSearch(val) {
-  searchQuery = val.toLowerCase().trim();
-  applyFilters();
-}
-
-function applyFilters() {
-  const products = window._allProducts || [];
-  let filtered = products;
-  if (currentCategory !== 'all') filtered = filtered.filter(p => p.category === currentCategory);
-  if (searchQuery) filtered = filtered.filter(p =>
-    p.title?.toLowerCase().includes(searchQuery) ||
-    p.description?.toLowerCase().includes(searchQuery)
-  );
-  renderProducts(filtered);
-}
-
-function trackClick(id) {
-  console.log('Product clicked:', id);
-}
-
-function handleLogout() {
-  if (confirm('আপনি কি লগআউট করতে চান?')) {
-    if (window._signOut) window._signOut();
-  }
-}
-
-/* ---- Helpers ---- */
-function escHtml(str) {
-  const d = document.createElement('div');
-  d.appendChild(document.createTextNode(str || ''));
-  return d.innerHTML;
-}
-
-function formatPrice(price) {
-  const n = parseFloat(price);
-  if (isNaN(n)) return price;
-  return n.toLocaleString('en-BD');
-}
-
-function showToastGlobal(msg, type = 'info') {
-  const wrap = document.getElementById('toast');
-  if (!wrap) return;
-  const item = document.createElement('div');
-  item.className = `toast-item ${type}`;
-  item.textContent = msg;
-  wrap.appendChild(item);
-  setTimeout(() => {
-    item.style.animation = 'toastOut 0.3s ease forwards';
-    setTimeout(() => item.remove(), 300);
-  }, 3500);
-}
-
-/* ---- Debug: Check if popup called ---- */
-console.log('🚀 Script loaded. Popup will show after 2.5 seconds');
+  console.log('🚀 Private Offer Share — Ready!');
 </script>
 </body>
-  </html>
+</html>

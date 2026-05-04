@@ -6,67 +6,34 @@
   <title>অ্যাডমিন প্যানেল — Private Offer Share</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    /* ---- Product Form Modal ---- */
-    .form-modal .modal-box {
-      max-width: 620px;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    .form-modal-title { font-size: 1.2rem; margin-bottom: 24px; padding-right: 40px; font-family: var(--font-display-bn); }
+    body { font-family: 'Hind Siliguri', 'Noto Sans Bengali', sans-serif; background: #0B1117; }
+    
+    .form-modal .modal-box { max-width: 620px; max-height: 90vh; overflow-y: auto; }
+    .form-modal-title { font-size: 1.2rem; margin-bottom: 24px; padding-right: 40px; }
     .form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px; }
 
-    /* ---- Cloudinary Upload Area ---- */
     #image-upload-area {
-      border: 2px dashed var(--border);
-      border-radius: var(--radius-sm);
+      border: 2px dashed rgba(255,255,255,0.06);
+      border-radius: 6px;
       padding: 28px;
       text-align: center;
       cursor: pointer;
-      transition: var(--transition);
-      position: relative;
+      transition: all 0.25s;
     }
-    #image-upload-area:hover { border-color: var(--accent); background: var(--accent-glow); }
-    #image-upload-area.dragging { border-color: var(--accent); background: var(--accent-glow); }
+    #image-upload-area:hover { border-color: #5CE1E6; background: rgba(92,225,230,0.05); }
     #image-file-input { display: none; }
-    #image-preview {
-      width: 100%;
-      max-height: 200px;
-      object-fit: contain;
-      border-radius: var(--radius-sm);
-      display: none;
-      margin-top: 12px;
-    }
-    .upload-progress {
-      height: 4px;
-      background: var(--border);
-      border-radius: 2px;
-      margin-top: 12px;
-      overflow: hidden;
-      display: none;
-    }
-    .upload-progress-bar {
-      height: 100%;
-      background: var(--accent);
-      border-radius: 2px;
-      width: 0%;
-      transition: width 0.3s ease;
-    }
-    .upload-status { font-size: 0.82rem; color: var(--text-muted); margin-top: 8px; font-family: var(--font-body-bn); }
+    #image-preview { width: 100%; max-height: 200px; object-fit: contain; border-radius: 6px; display: none; margin-top: 12px; }
+    .upload-progress { height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; margin-top: 12px; overflow: hidden; display: none; }
+    .upload-progress-bar { height: 100%; background: #5CE1E6; border-radius: 2px; width: 0%; }
 
-    /* ---- Table responsive ---- */
     @media (max-width: 900px) {
-      .table-header, .table-row {
-        grid-template-columns: 44px 1fr 100px !important;
-      }
+      .table-header, .table-row { grid-template-columns: 44px 1fr 100px !important; }
     }
 
-    /* ---- Delete confirm ---- */
     .confirm-modal .modal-box { max-width: 360px; text-align: center; }
-    .confirm-modal h3 { font-size: 1.1rem; margin-bottom: 10px; font-family: var(--font-display-bn); }
-    .confirm-modal p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 24px; font-family: var(--font-body-bn); }
+    .confirm-modal h3 { font-size: 1.1rem; margin-bottom: 10px; }
     .confirm-actions { display: flex; gap: 10px; justify-content: center; }
 
-    /* ---- Access Denied ---- */
     #access-denied {
       display: none;
       min-height: 100vh;
@@ -75,264 +42,396 @@
       justify-content: center;
       text-align: center;
       padding: 40px;
+      color: #E6EDF3;
     }
-    #access-denied h2 { font-size: 1.5rem; margin-bottom: 12px; font-family: var(--font-display-bn); }
-    #access-denied p { color: var(--text-secondary); margin-bottom: 24px; font-family: var(--font-body-bn); }
+    #access-denied h2 { font-size: 1.5rem; margin-bottom: 12px; }
 
-    /* ---- Admin nav mobile ---- */
-    .mobile-admin-nav {
-      display: none;
-      background: var(--bg-secondary);
-      border-bottom: 1px solid var(--border);
-      padding: 12px 16px;
-      gap: 8px;
-    }
+    .admin-layout { display: flex; min-height: 100vh; }
+    
     @media (max-width: 768px) {
       .admin-layout { flex-direction: column; }
-      .mobile-admin-nav { display: flex; }
       .admin-content { padding: 20px 16px; }
     }
+    /* ============================================
+   ADMIN PANEL — MOBILE RESPONSIVE
+   ============================================ */
 
-    /* ---- Loading Error State ---- */
-    #loading-error {
-      display: none;
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--text-secondary);
-    }
-    #loading-error h3 { 
-      font-family: var(--font-display-bn); 
-      margin-bottom: 12px; 
-      color: var(--error);
-    }
-    #loading-error button { margin-top: 16px; }
+/* ট্যাবলেট ও ছোট স্ক্রিন */
+@media (max-width: 900px) {
+  .table-header, .table-row {
+    grid-template-columns: 50px 1fr 100px !important;
+  }
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+/* মোবাইল (768px এর নিচে) */
+@media (max-width: 768px) {
+  /* লেআউট — সাইডবার উপরে চলে যাবে */
+  .admin-layout {
+    flex-direction: column !important;
+  }
+
+  /* সাইডবার — হরাইজন্টাল স্ক্রল */
+  aside {
+    width: 100% !important;
+    min-height: auto !important;
+    padding: 0 !important;
+    position: sticky !important;
+    top: 0;
+    z-index: 100;
+    background: #111820 !important;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+  }
+
+  aside > div:first-child {
+    display: none; /* লোগো হাইড */
+  }
+
+  aside nav {
+    display: flex !important;
+    overflow-x: auto !important;
+    padding: 8px 12px !important;
+    gap: 4px !important;
+  }
+
+  aside nav .sidebar-link {
+    flex-shrink: 0 !important;
+    padding: 8px 16px !important;
+    border-radius: 100px !important;
+    font-size: 0.78rem !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+    white-space: nowrap !important;
+  }
+
+  aside nav .sidebar-link.active {
+    background: rgba(92,225,230,0.12) !important;
+    border-color: #5CE1E6 !important;
+    border-right: 1px solid #5CE1E6 !important;
+    color: #5CE1E6 !important;
+  }
+
+  aside > div:last-child {
+    display: none !important; /* স্টোর/লগআউট হাইড */
+  }
+
+  /* মেইন কন্টেন্ট */
+  main {
+    padding: 16px 12px !important;
+  }
+
+  /* স্ট্যাটস কার্ড */
+  .stats-row, 
+  [style*="grid-template-columns:repeat(auto-fill,minmax(160px,1fr))"] {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  /* ড্যাশবোর্ড হেডার */
+  .admin-header,
+  [style*="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px"] {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+
+  /* প্রোডাক্ট টেবিল */
+  [style*="display:grid;grid-template-columns:50px 1fr 90px 110px 160px"] {
+    grid-template-columns: 40px 1fr 70px !important;
+    gap: 8px !important;
+    font-size: 0.78rem !important;
+  }
+
+  /* টেবিলের ৪র্থ ও ৫ম কলাম হাইড (category + কিছু action) */
+  [style*="display:grid;grid-template-columns:50px 1fr 90px 110px 160px"] > *:nth-child(4),
+  [style*="display:grid;grid-template-columns:50px 1fr 90px 110px 160px"] > *:nth-child(5) {
+    display: none !important;
+  }
+
+  /* মোবাইল প্রোডাক্ট টেবিল */
+  .table-row {
+    grid-template-columns: 40px 1fr 70px !important;
+    gap: 8px !important;
+    padding: 10px 12px !important;
+  }
+
+  .table-thumb {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .table-actions {
+    flex-direction: column !important;
+    gap: 4px !important;
+  }
+
+  .table-actions button {
+    padding: 6px 10px !important;
+    font-size: 0.7rem !important;
+    width: 100% !important;
+  }
+
+  /* মোডাল */
+  .modal-box {
+    max-width: 95vw !important;
+    padding: 24px 16px !important;
+    margin: 10px !important;
+  }
+
+  .form-modal .modal-box {
+    max-height: 85vh !important;
+  }
+
+  /* ফর্ম রো */
+  .form-row,
+  [style*="display:grid;grid-template-columns:1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* প্রোডাক্ট ফর্ম */
+  .product-form {
+    gap: 12px !important;
+  }
+
+  /* সার্চ বার */
+  #admin-search {
+    max-width: 100% !important;
+  }
+
+  /* সেটিংস পেজ */
+  [style*="max-width:560px"] {
+    max-width: 100% !important;
+  }
+
+  /* দ্রুত অ্যাকশন বাটন */
+  [style*="display:flex;gap:12px;flex-wrap:wrap"] {
+    flex-direction: column !important;
+  }
+
+  [style*="display:flex;gap:12px;flex-wrap:wrap"] button {
+    width: 100% !important;
+  }
+}
+
+/* এক্সট্রা স্মল ফোন (480px এর নিচে) */
+@media (max-width: 480px) {
+  .stats-row,
+  [style*="grid-template-columns:repeat(auto-fill,minmax(160px,1fr))"] {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 6px !important;
+  }
+
+  .stat-card,
+  [style*="background:#161B22;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:18px"] {
+    padding: 12px 10px !important;
+  }
+
+  .stat-value,
+  [style*="font-size:1.8rem;font-weight:800"] {
+    font-size: 1.3rem !important;
+  }
+
+  .stat-label,
+  [style*="font-size:0.78rem;color:#5D6670"] {
+    font-size: 0.68rem !important;
+  }
+
+  /* টেবিল আরও ছোট */
+  [style*="display:grid;grid-template-columns:50px 1fr 90px 110px 160px"] {
+    grid-template-columns: 36px 1fr 60px !important;
+    gap: 6px !important;
+    font-size: 0.72rem !important;
+  }
+
+  .table-actions button {
+    padding: 5px 8px !important;
+    font-size: 0.65rem !important;
+  }
+
+  /* নেভবার টেক্সট */
+  aside nav .sidebar-link {
+    font-size: 0.7rem !important;
+    padding: 6px 12px !important;
+  }
+
+  /* মোডাল */
+  .modal-box {
+    padding: 20px 14px !important;
+  }
+
+  .form-modal-title {
+    font-size: 1rem !important;
+  }
+}
+
+/* ল্যান্ডস্কেপ মোডে প্রোডাক্ট টেবিল */
+@media (max-width: 900px) and (orientation: landscape) {
+  [style*="display:grid;grid-template-columns:50px 1fr 90px 110px 160px"] {
+    grid-template-columns: 44px 1fr 80px 90px !important;
+  }
+}
   </style>
 </head>
 <body>
 
 <!-- Page Loader -->
-<div id="page-loader">
-  <div class="loader-logo">Private<span>Offer</span> Share <span style="color:var(--text-muted);font-size:0.6em;font-weight:400;">অ্যাডমিন</span></div>
-  <div class="spinner"></div>
+<div id="page-loader" style="position:fixed;inset:0;background:#0B1117;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;">
+  <div style="font-family:'Hind Siliguri',sans-serif;font-weight:800;font-size:1.4rem;text-transform:uppercase;color:#E6EDF3;">Private<span style="color:#5CE1E6;">Offer</span> Share</div>
+  <div style="width:34px;height:34px;border:3px solid rgba(255,255,255,0.06);border-top-color:#5CE1E6;border-radius:50%;animation:spin 0.7s linear infinite;"></div>
+  <p id="loader-status" style="color:#8B949E;font-size:0.85rem;">অনুগ্রহ করে অপেক্ষা করুন...</p>
 </div>
 
-<!-- Loading Error -->
-<div id="loading-error">
-  <div style="font-size:3rem;margin-bottom:16px;">⚠️</div>
-  <h3>লোড করতে সমস্যা হচ্ছে</h3>
-  <p id="loading-error-msg">ইন্টারনেট সংযোগ চেক করুন অথবা রিলোড করুন।</p>
-  <button class="btn btn-primary" onclick="location.reload()">🔄 রিলোড</button>
-</div>
+<style>
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
 
 <!-- Access Denied -->
 <div id="access-denied">
   <div style="font-size:4rem;margin-bottom:16px;">🔒</div>
   <h2>অ্যাক্সেস প্রত্যাখ্যান</h2>
-  <p>এই প্যানেলে অ্যাক্সেস করার অনুমতি আপনার নেই।</p>
-  <a href="index.html" class="btn btn-primary">স্টোরে যান</a>
+  <p style="color:#8B949E;margin-bottom:24px;">এই প্যানেলে অ্যাক্সেস করার অনুমতি আপনার নেই।</p>
+  <a href="index.html" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:#5CE1E6;color:#0B1117;border-radius:6px;font-weight:700;text-decoration:none;">স্টোরে যান</a>
 </div>
 
-<!-- ===== PRODUCT FORM MODAL ===== -->
-<div class="modal-overlay form-modal hidden" id="product-modal">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeProductModal()">✕</button>
+<!-- PRODUCT FORM MODAL -->
+<div class="modal-overlay form-modal hidden" id="product-modal" style="position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:500;display:none;align-items:center;justify-content:center;">
+  <div class="modal-box" style="background:#161B22;border:1px solid rgba(255,255,255,0.06);border-top:2px solid #5CE1E6;border-radius:16px;padding:32px;max-width:620px;width:100%;position:relative;">
+    <button class="modal-close" onclick="closeProductModal()" style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.06);color:#8B949E;width:30px;height:30px;border-radius:50%;cursor:pointer;">✕</button>
     <h3 class="form-modal-title" id="form-title">নতুন প্রোডাক্ট যোগ করুন</h3>
     <input type="hidden" id="edit-product-id" />
-
-    <div class="product-form">
-      <div class="form-group">
-        <label class="form-label">প্রোডাক্টের নাম *</label>
-        <input type="text" id="f-title" class="form-input" placeholder="যেমন: Wireless Earbuds Pro" />
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div>
+        <label style="font-size:0.82rem;color:#8B949E;">প্রোডাক্টের নাম *</label>
+        <input type="text" id="f-title" style="width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;color:#E6EDF3;padding:12px;margin-top:5px;" placeholder="যেমন: Wireless Earbuds Pro" />
       </div>
-
-      <div class="form-group">
-        <label class="form-label">বিবরণ</label>
-        <textarea id="f-desc" class="form-input" rows="3" placeholder="ছোট করে প্রোডাক্টের বিবরণ..." style="resize:vertical;"></textarea>
+      <div>
+        <label style="font-size:0.82rem;color:#8B949E;">বিবরণ</label>
+        <textarea id="f-desc" rows="3" style="width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;color:#E6EDF3;padding:12px;margin-top:5px;resize:vertical;" placeholder="ছোট করে প্রোডাক্টের বিবরণ..."></textarea>
       </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">মূল্য (৳) *</label>
-          <input type="number" id="f-price" class="form-input" placeholder="যেমন: ১২৯৯" min="0" />
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div>
+          <label style="font-size:0.82rem;color:#8B949E;">মূল্য (৳) *</label>
+          <input type="number" id="f-price" style="width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;color:#E6EDF3;padding:12px;margin-top:5px;" placeholder="যেমন: ১২৯৯" min="0" />
         </div>
-        <div class="form-group">
-          <label class="form-label">ক্যাটাগরি</label>
-          <input type="text" id="f-category" class="form-input" placeholder="যেমন: ইলেকট্রনিক্স" />
+        <div>
+          <label style="font-size:0.82rem;color:#8B949E;">ক্যাটাগরি</label>
+          <input type="text" id="f-category" style="width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;color:#E6EDF3;padding:12px;margin-top:5px;" placeholder="যেমন: ইলেকট্রনিক্স" />
         </div>
       </div>
-
-      <div class="form-group">
-        <label class="form-label">দারাজ অ্যাফিলিয়েট লিংক *</label>
-        <input type="url" id="f-link" class="form-input" placeholder="https://www.daraz.com.bd/products/..." />
+      <div>
+        <label style="font-size:0.82rem;color:#8B949E;">দারাজ অ্যাফিলিয়েট লিংক *</label>
+        <input type="url" id="f-link" style="width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;color:#E6EDF3;padding:12px;margin-top:5px;" placeholder="https://www.daraz.com.bd/products/..." />
       </div>
-
-      <div class="form-group">
-        <label class="form-label">প্রোডাক্টের ছবি</label>
-        <div id="image-upload-area" onclick="document.getElementById('image-file-input').click()"
-             ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragleave="handleDragLeave(event)">
+      <div>
+        <label style="font-size:0.82rem;color:#8B949E;">প্রোডাক্টের ছবি</label>
+        <div id="image-upload-area" onclick="document.getElementById('image-file-input').click()">
           <input type="file" id="image-file-input" accept="image/*" onchange="handleImageFile(this.files[0])" />
           <div id="upload-placeholder">
-            <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 8px;color:var(--text-muted);">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
-            </svg>
-            <p style="color:var(--text-muted);font-size:0.85rem;font-family:var(--font-body-bn);">ছবি আপলোড করতে ক্লিক করুন বা টেনে আনুন</p>
-            <p style="color:var(--text-muted);font-size:0.75rem;margin-top:4px;font-family:var(--font-body-bn);">JPG, PNG, WEBP (সর্বোচ্চ ১০MB)</p>
+            <p style="color:#8B949E;">ছবি আপলোড করতে ক্লিক করুন</p>
           </div>
           <img id="image-preview" src="" alt="প্রিভিউ" />
         </div>
-        <div class="upload-progress" id="upload-progress">
-          <div class="upload-progress-bar" id="upload-progress-bar"></div>
-        </div>
-        <div class="upload-status" id="upload-status"></div>
+        <div class="upload-progress" id="upload-progress"><div class="upload-progress-bar" id="upload-progress-bar"></div></div>
+        <div id="upload-status" style="font-size:0.82rem;color:#8B949E;margin-top:8px;"></div>
         <input type="hidden" id="f-image-url" />
       </div>
-
-      <div id="form-error" class="input-error" style="display:none; color: var(--error); font-size: 0.85rem;"></div>
-
-      <div class="form-actions">
-        <button class="btn btn-ghost" onclick="closeProductModal()">বাতিল</button>
-        <button class="btn btn-primary" id="btn-save" onclick="saveProduct()">
-          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
-          সেভ করুন
-        </button>
+      <div id="form-error" style="display:none;color:#ef4444;font-size:0.85rem;"></div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <button onclick="closeProductModal()" style="padding:10px 20px;background:rgba(255,255,255,0.03);color:#E6EDF3;border:1px solid rgba(255,255,255,0.06);border-radius:6px;cursor:pointer;">বাতিল</button>
+        <button id="btn-save" onclick="saveProduct()" style="padding:10px 20px;background:#5CE1E6;color:#0B1117;border-radius:6px;font-weight:700;cursor:pointer;">✓ সেভ করুন</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ===== DELETE CONFIRM MODAL ===== -->
-<div class="modal-overlay confirm-modal hidden" id="confirm-modal">
-  <div class="modal-box">
-    <div style="font-size:2.5rem;margin-bottom:12px;">🗑️</div>
-    <h3>প্রোডাক্টটি মুছবেন?</h3>
-    <p>এই কাজটি আর ফিরিয়ে আনা যাবে না। প্রোডাক্টটি স্থায়ীভাবে মুছে যাবে।</p>
-    <div class="confirm-actions">
-      <button class="btn btn-ghost" onclick="closeConfirmModal()">বাতিল</button>
-      <button class="btn btn-danger" id="btn-confirm-delete" onclick="confirmDelete()">মুছুন</button>
+<!-- DELETE CONFIRM -->
+<div class="modal-overlay confirm-modal hidden" id="confirm-modal" style="position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:500;display:none;align-items:center;justify-content:center;">
+  <div style="background:#161B22;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:32px;max-width:360px;text-align:center;">
+    <div style="font-size:2.5rem;">🗑️</div>
+    <h3 style="margin:10px 0;">প্রোডাক্টটি মুছবেন?</h3>
+    <p style="color:#8B949E;margin-bottom:20px;">এই কাজটি আর ফিরিয়ে আনা যাবে না।</p>
+    <div style="display:flex;gap:10px;justify-content:center;">
+      <button onclick="closeConfirmModal()" style="padding:10px 20px;background:rgba(255,255,255,0.03);color:#E6EDF3;border:1px solid rgba(255,255,255,0.06);border-radius:6px;cursor:pointer;">বাতিল</button>
+      <button onclick="confirmDelete()" style="padding:10px 20px;background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.2);border-radius:6px;cursor:pointer;">মুছুন</button>
     </div>
   </div>
 </div>
 
-<!-- ===== ADMIN LAYOUT ===== -->
+<!-- ADMIN LAYOUT -->
 <div id="admin-layout" class="admin-layout" style="display:none;">
-  <div class="mobile-admin-nav">
-    <div class="navbar-logo" style="font-size:0.95rem;">Private<span style="color:var(--accent);">Offer</span> Share</div>
-    <div style="flex:1;"></div>
-    <a href="index.html" class="btn btn-ghost btn-sm">← স্টোর</a>
-    <button class="btn btn-ghost btn-sm" onclick="handleLogout()">লগআউট</button>
-  </div>
-
-  <aside class="admin-sidebar">
-    <div class="admin-logo">
-      <div style="font-family:var(--font-display-bn);font-size:1.1rem;font-weight:800;">Private<span style="color:var(--accent);">Offer</span> Share</div>
-      <div style="font-size:0.75rem;color:var(--text-muted);margin-top:2px;">অ্যাডমিন প্যানেল</div>
+  <!-- Sidebar -->
+  <aside style="width:220px;background:#111820;border-right:1px solid rgba(255,255,255,0.06);padding:20px 0;min-height:100vh;">
+    <div style="padding:0 20px 20px;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:12px;">
+      <div style="font-weight:800;font-size:1.1rem;color:#E6EDF3;">Private<span style="color:#5CE1E6;">Offer</span> Share</div>
+      <div style="font-size:0.75rem;color:#5D6670;">অ্যাডমিন প্যানেল</div>
     </div>
     <nav>
-      <div class="sidebar-link active" onclick="showTab('dashboard')">
-        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-        ড্যাশবোর্ড
-      </div>
-      <div class="sidebar-link" onclick="showTab('products')">
-        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0l-3-3m3 3l3-3M3.75 7.5h16.5"/></svg>
-        প্রোডাক্ট
-      </div>
-      <div class="sidebar-link" onclick="showTab('settings')">
-        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-        সেটিংস
-      </div>
-      <div style="padding: 16px 24px; border-top: 1px solid var(--border); margin-top: auto;">
-        <a href="index.html" class="sidebar-link" style="padding:10px 0;margin-bottom:4px;">
-          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
-          স্টোর দেখুন
-        </a>
-        <div class="sidebar-link" style="padding:10px 0;" onclick="handleLogout()">
-          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/></svg>
-          লগআউট
-        </div>
-      </div>
+      <div onclick="showTab('dashboard')" class="sidebar-link active" style="display:flex;align-items:center;gap:10px;padding:11px 20px;color:#5CE1E6;background:rgba(92,225,230,0.06);border-right:2px solid #5CE1E6;cursor:pointer;">📊 ড্যাশবোর্ড</div>
+      <div onclick="showTab('products')" class="sidebar-link" style="display:flex;align-items:center;gap:10px;padding:11px 20px;color:#8B949E;cursor:pointer;">📦 প্রোডাক্ট</div>
+      <div onclick="showTab('settings')" class="sidebar-link" style="display:flex;align-items:center;gap:10px;padding:11px 20px;color:#8B949E;cursor:pointer;">⚙️ সেটিংস</div>
     </nav>
+    <div style="position:absolute;bottom:20px;padding:16px 20px;border-top:1px solid rgba(255,255,255,0.06);width:220px;">
+      <a href="index.html" style="display:block;padding:10px 0;color:#8B949E;text-decoration:none;">🏪 স্টোর দেখুন</a>
+      <div onclick="handleLogout()" style="padding:10px 0;color:#8B949E;cursor:pointer;">🚪 লগআউট</div>
+    </div>
   </aside>
 
-  <main class="admin-content">
+  <!-- Main Content -->
+  <main style="flex:1;padding:28px;">
     <div id="tab-dashboard">
-      <div class="admin-header">
-        <h1 class="admin-page-title">ড্যাশবোর্ড</h1>
-        <div id="admin-name" style="color:var(--text-secondary);font-size:0.9rem;"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;padding-bottom:18px;border-bottom:1px solid rgba(255,255,255,0.06);">
+        <h1 style="font-size:1.3rem;text-transform:uppercase;">ড্যাশবোর্ড</h1>
+        <div id="admin-name" style="color:#8B949E;"></div>
       </div>
-      <div class="stats-row">
-        <div class="stat-card">
-          <div class="stat-value" id="stat-products">—</div>
-          <div class="stat-label">সর্বমোট প্রোডাক্ট</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:28px;">
+        <div style="background:#161B22;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:18px;">
+          <div id="stat-products" style="font-size:1.8rem;font-weight:800;color:#5CE1E6;">—</div>
+          <div style="font-size:0.78rem;color:#5D6670;">সর্বমোট প্রোডাক্ট</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-value" id="stat-categories">—</div>
-          <div class="stat-label">ক্যাটাগরি</div>
+        <div style="background:#161B22;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:18px;">
+          <div id="stat-categories" style="font-size:1.8rem;font-weight:800;color:#5CE1E6;">—</div>
+          <div style="font-size:0.78rem;color:#5D6670;">ক্যাটাগরি</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-value" id="stat-users">—</div>
-          <div class="stat-label">রেজিস্টার্ড ইউজার</div>
+        <div style="background:#161B22;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:18px;">
+          <div id="stat-users" style="font-size:1.8rem;font-weight:800;color:#5CE1E6;">—</div>
+          <div style="font-size:0.78rem;color:#5D6670;">রেজিস্টার্ড ইউজার</div>
         </div>
       </div>
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:24px;">
-        <h3 style="margin-bottom:16px;font-size:1rem;font-family:var(--font-display-bn);">দ্রুত অ্যাকশন</h3>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;">
-          <button class="btn btn-primary" onclick="openAddModal()">
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-            প্রোডাক্ট যোগ করুন
-          </button>
-          <button class="btn btn-outline" onclick="showTab('products')">
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-            প্রোডাক্ট ম্যানেজ করুন
-          </button>
-        </div>
+      <div style="background:#161B22;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:24px;">
+        <h3 style="margin-bottom:16px;">দ্রুত অ্যাকশন</h3>
+        <button onclick="openAddModal()" style="padding:10px 20px;background:#5CE1E6;color:#0B1117;border-radius:6px;font-weight:700;cursor:pointer;margin-right:10px;">+ প্রোডাক্ট যোগ করুন</button>
+        <button onclick="showTab('products')" style="padding:10px 20px;background:transparent;color:#5CE1E6;border:1px solid rgba(92,225,230,0.25);border-radius:6px;cursor:pointer;">প্রোডাক্ট ম্যানেজ করুন</button>
       </div>
     </div>
 
     <div id="tab-products" style="display:none;">
-      <div class="admin-header">
-        <h1 class="admin-page-title">প্রোডাক্ট সমূহ</h1>
-        <button class="btn btn-primary btn-sm" onclick="openAddModal()">
-          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-          প্রোডাক্ট যোগ করুন
-        </button>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <h1 style="font-size:1.3rem;text-transform:uppercase;">প্রোডাক্ট সমূহ</h1>
+        <button onclick="openAddModal()" style="padding:8px 16px;background:#5CE1E6;color:#0B1117;border-radius:6px;font-weight:700;cursor:pointer;">+ প্রোডাক্ট যোগ করুন</button>
       </div>
-
-      <div style="position:relative;max-width:360px;margin-bottom:20px;">
-        <input type="search" class="form-input" id="admin-search" placeholder="প্রোডাক্ট খুঁজুন..." oninput="filterAdminProducts(this.value)" style="padding-left:42px;" />
-        <svg style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      </div>
-
-      <div class="products-table" id="products-table">
-        <div class="table-header">
-          <div></div>
-          <div>প্রোডাক্ট</div>
-          <div class="hide-mobile">মূল্য</div>
-          <div class="hide-mobile">ক্যাটাগরি</div>
-          <div>অ্যাকশন</div>
-        </div>
-        <div id="products-table-body">
-          <div style="padding:40px;text-align:center;"><div class="spinner"></div></div>
-        </div>
+      <input type="search" id="admin-search" placeholder="প্রোডাক্ট খুঁজুন..." oninput="filterAdminProducts(this.value)" style="width:100%;max-width:360px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;color:#E6EDF3;padding:12px 16px 12px 40px;margin-bottom:20px;" />
+      <div style="background:#161B22;border:1px solid rgba(255,255,255,0.06);border-radius:10px;">
+        <div id="products-table-body" style="padding:40px;text-align:center;"><div style="width:34px;height:34px;border:3px solid rgba(255,255,255,0.06);border-top-color:#5CE1E6;border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto;"></div></div>
       </div>
     </div>
 
     <div id="tab-settings" style="display:none;">
-      <div class="admin-header">
-        <h1 class="admin-page-title">সেটিংস</h1>
-      </div>
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:28px;max-width:560px;">
-        <h3 style="margin-bottom:6px;font-size:1rem;font-family:var(--font-display-bn);">অ্যাডমিন UID</h3>
-        <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:16px;font-family:var(--font-body-bn);">আপনার Firebase ইউজার আইডি — অ্যাডমিন অ্যাক্সেস দেওয়ার জন্য প্রয়োজন।</p>
-        <div id="admin-uid-display" style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;font-family:monospace;font-size:0.85rem;color:var(--accent);word-break:break-all;"></div>
-        <button class="btn btn-ghost btn-sm" style="margin-top:12px;" onclick="copyUID()">UID কপি করুন</button>
+      <h1 style="font-size:1.3rem;text-transform:uppercase;margin-bottom:20px;">সেটিংস</h1>
+      <div style="background:#161B22;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:28px;max-width:560px;">
+        <h3 style="margin-bottom:6px;">অ্যাডমিন UID</h3>
+        <p style="color:#8B949E;font-size:0.85rem;margin-bottom:16px;">আপনার Firebase ইউজার আইডি</p>
+        <div id="admin-uid-display" style="background:#111820;border:1px solid rgba(255,255,255,0.06);border-radius:6px;padding:12px 16px;font-family:monospace;color:#5CE1E6;word-break:break-all;"></div>
       </div>
     </div>
   </main>
 </div>
 
-<div id="toast"></div>
+<div id="toast" style="position:fixed;bottom:24px;right:24px;z-index:9999;"></div>
 
-<!-- ===== FIREBASE + ADMIN LOGIC ===== -->
+<!-- ===== FIREBASE CORE ===== -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut }
@@ -342,7 +441,7 @@
     doc, serverTimestamp, query, orderBy
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  // ✅ আপনার Firebase Config
+  // ✅ Firebase Config
   const firebaseConfig = {
     apiKey: "AIzaSyClg_colIw3qLzE3DefSeEJP98i37kI-dI",
     authDomain: "rivate-offer-share.firebaseapp.com",
@@ -353,75 +452,148 @@
     measurementId: "G-KWNSXRW4CB"
   };
 
-  // ✅ আপনার Cloudinary Config
+  // ✅ Cloudinary Config
   const CLOUDINARY_CONFIG = {
     cloudName: "dbrrxrbb9",
     uploadPreset: "private-offer-share"
   };
 
-  // ⚠️ নিচে আপনার Firebase Auth UID বসান (Firebase Console → Authentication → Users থেকে কপি করুন)
-  const ADMIN_UID="5dqnlLfsDPTAu3brUVAQxSrPY603";
+  // ✅ আপনার UID
+  const ADMIN_UID = "5dqnlLfsDPTAu3brUVAQxSrPY603";
 
-  const app  = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db   = getFirestore(app);
+  try {
+    console.log('🔥 Firebase Init Starting...');
+    const app  = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+    console.log('✅ Firebase Initialized');
 
-  window._db   = db;
-  window._auth = auth;
-  window._CLOUDINARY = CLOUDINARY_CONFIG;
-  window._fns = { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, query, orderBy };
+    window._db   = db;
+    window._auth = auth;
+    window._CLOUDINARY = CLOUDINARY_CONFIG;
+    window._fns = { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, query, orderBy };
 
-  // ============================================
-  // TIMEOUT — 10 সেকেন্ড পরও লোড না হলে Error
-  // ============================================
-  let loadTimeout;
+    // পেজ লোডের সাথে সাথে স্ট্যাটাস আপডেট
+    document.getElementById('loader-status').textContent = 'Firebase সংযুক্ত হয়েছে...';
 
-  function startTimeout() {
-    loadTimeout = setTimeout(() => {
-      document.getElementById('page-loader').classList.add('fade-out');
-      setTimeout(() => document.getElementById('page-loader').remove(), 400);
-      document.getElementById('loading-error').style.display = 'block';
-    }, 10000); // 10 seconds
+    // ============================================
+    // FORCE CHECK — 3 সেকেন্ড পরও লোড না হলে
+    // ============================================
+    setTimeout(() => {
+      const loader = document.getElementById('page-loader');
+      if (loader && loader.style.display !== 'none') {
+        document.getElementById('loader-status').textContent = 'লোড হতে দেরি হচ্ছে... রিলোড করুন';
+      }
+    }, 5000);
+
+    // ============================================
+    // AUTH STATE CHANGE
+    // ============================================
+    onAuthStateChanged(auth, async (user) => {
+      console.log('🔍 Auth Check:', user ? 'Logged in: ' + user.uid : 'No user');
+
+      if (!user) {
+        // লগইন নেই
+        console.log('❌ No user → Redirect to auth.html');
+        window.location.href = 'auth.html';
+        return;
+      }
+
+      // লোডার হাইড
+      const loader = document.getElementById('page-loader');
+      if (loader) {
+        loader.style.opacity = '0';
+        loader.style.transition = 'opacity 0.3s';
+        setTimeout(() => loader.remove(), 300);
+      }
+
+      // UID চেক
+      console.log('👤 User UID:', user.uid);
+      console.log('🔑 Admin UID:', ADMIN_UID);
+
+      if (user.uid !== ADMIN_UID) {
+        console.log('❌ Access Denied');
+        document.getElementById('access-denied').style.display = 'flex';
+        return;
+      }
+
+      // ✅ অ্যাডমিন → প্যানেল দেখান
+      console.log('✅ Admin verified — Loading panel...');
+      document.getElementById('admin-layout').style.display = 'flex';
+      document.getElementById('admin-name').textContent = 'স্বাগতম, ' + (user.displayName || 'অ্যাডমিন');
+      document.getElementById('admin-uid-display').textContent = user.uid;
+
+      // ডাটা লোড
+      try {
+        await window.loadAllProducts();
+        await loadStats();
+        console.log('✅ All data loaded');
+      } catch (e) {
+        console.error('❌ Load error:', e);
+        showToast('ডাটা লোডে সমস্যা: ' + e.message, 'error');
+      }
+    });
+
+    window._signOut = () => signOut(auth);
+
+    // ============================================
+    // STATS
+    // ============================================
+    async function loadStats() {
+      try {
+        const f = window._fns;
+        const d = window._db;
+        const pSnap = await f.getDocs(f.collection(d, 'products'));
+        const uSnap = await f.getDocs(f.collection(d, 'users'));
+        const products = pSnap.docs.map(doc => doc.data());
+        const cats = new Set(products.map(p => p.category).filter(Boolean));
+        document.getElementById('stat-products').textContent   = pSnap.size || '0';
+        document.getElementById('stat-categories').textContent = cats.size || '0';
+        document.getElementById('stat-users').textContent      = uSnap.size || '0';
+      } catch(e) { 
+        console.error('Stats error:', e); 
+      }
+    }
+
+    // ============================================
+    // CLOUDINARY UPLOAD
+    // ============================================
+    window.uploadToCloudinary = async function(file) {
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('upload_preset', CLOUDINARY_CONFIG.uploadPreset);
+
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/image/upload`);
+        xhr.upload.onprogress = (e) => {
+          if (e.lengthComputable) {
+            const pct = Math.round((e.loaded / e.total) * 100);
+            const bar = document.getElementById('upload-progress-bar');
+            if (bar) bar.style.width = pct + '%';
+          }
+        };
+        xhr.onload = () => {
+          if (xhr.status === 200) resolve(JSON.parse(xhr.responseText).secure_url);
+          else reject(new Error('আপলোড ব্যর্থ'));
+        };
+        xhr.onerror = () => reject(new Error('আপলোড ব্যর্থ'));
+        xhr.send(fd);
+      });
+    };
+
+  } catch (e) {
+    console.error('❌ Firebase Init Error:', e);
+    document.getElementById('loader-status').textContent = 'Firebase ত্রুটি: ' + e.message;
   }
+</script>
 
-  function clearTimeoutLoader() {
-    if (loadTimeout) clearTimeout(loadTimeout);
-  }
+<!-- ===== UI SCRIPTS ===== -->
+<script>
+  let allAdminProducts = [];
+  let deleteTargetId   = null;
+  let isEditMode       = false;
 
-  startTimeout();
-
-  // ============================================
-  // AUTH STATE
-  // ============================================
-  onAuthStateChanged(auth, async user => {
-    clearTimeoutLoader();
-    
-    if (!user) {
-      // লগইন নেই → auth.html এ পাঠান
-      window.location.href = 'auth.html';
-      return;
-    }
-
-    console.log('✅ Logged in as:', user.uid);
-    console.log('🔑 Admin UID set to:', ADMIN_UID);
-
-    // চেক: অ্যাডমিন UID সেট করা আছে কিনা?
-    if (ADMIN_UID === "YOUR_ADMIN_UID_HERE") {
-      document.getElementById('loading-error-msg').textContent = 'অ্যাডমিন UID সেট করা হয়নি। admin.html ফাইলে ADMIN_UID আপডেট করুন।';
-      document.getElementById('loading-error').style.display = 'block';
-      hideLoader();
-      return;
-    }
-
-    // চেক: ইউজার অ্যাডমিন কিনা?
-    if (user.uid !== ADMIN_UID) {
-      hideLoader();
-      document.getElementById('access-denied').style.display = 'flex';
-      return;
-    }
-
-    // ✅ অ্যাডমিন — প্যানেল দেখান
-    hideLoader();
-    document.getElementById('admin-layout').style.display = 'flex';
-    document.getElementById('admin-name').textContent = 'স্বাগতম, ' + (user.displayName || 'অ্যাডমিন');
-    document.getElementById(
+  function showTab(tab) {
+    ['dashboard','products','settings'].forEach(t => {
+      document.getElementById('tab-' + t).style.displa
